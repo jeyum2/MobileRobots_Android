@@ -1,13 +1,14 @@
 package kr.ac.uos.je;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-public class MobileRobotsAndroidVerMainActivity extends Activity {
+import com.badlogic.gdx.backends.android.AndroidApplication;
+
+public class MobileRobotsAndroidVerMainActivity extends AndroidApplication{
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        initialize(new MobileRobotsMainRenderer(), false);
     }
 }

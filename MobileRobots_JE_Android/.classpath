@@ -3,5 +3,8 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="lib" path="libs/gdx-backend-android.jar" sourcepath="libs/gdx-backend-android-sources.jar"/>
+	<classpathentry kind="lib" path="/MobileRobots_JE_Main/libs/gdx.jar" sourcepath="/MobileRobots_JE_Main/libs/gdx-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/MobileRobots_JE_Main"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
