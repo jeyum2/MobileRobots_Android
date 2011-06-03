@@ -1,5 +1,7 @@
 package kr.ac.uos.je;
 
+import kr.ac.uos.je.view.MobileRobotsMainRenderer;
+
 import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 public class MobileRobotsDesktopMain {
