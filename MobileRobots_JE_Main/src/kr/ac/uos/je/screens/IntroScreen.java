@@ -14,7 +14,8 @@ public class IntroScreen implements Screen {
 	
 	private AndroidAdaptor mAndroidAdaptor;
 	private SpriteBatch spriteBatch;
-	private TextureRegion introTexture;
+	private TextureRegion introTextureRegion;
+	private Texture introTexture; 
 	public IntroScreen(Application app, AndroidAdaptor androidAdaptor) {
 		this.mAndroidAdaptor = androidAdaptor;
 		this.spriteBatch = new SpriteBatch();
@@ -24,7 +25,9 @@ public class IntroScreen implements Screen {
 		int pixMapHeight = MathUtils.nextPowerOfTwo(pixmap.getHeight());
 		Pixmap potPixmap = new Pixmap(pixMapWidth, pixMapHeight, pixmap.getFormat());
 		potPixmap.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-		introTexture = new TextureRegion(new Texture(potPixmap),0,0,pixmap.getWidth(),pixmap.getHeight());
+		introTexture = new Texture(potPixmap);
+		introTextureRegion = new TextureRegion(introTexture,0,0,pixmap.getWidth(),pixmap.getHeight());
+		
 		pixmap.dispose();
 		potPixmap.dispose();
 		
@@ -35,7 +38,7 @@ public class IntroScreen implements Screen {
 	private boolean requestedloginDialog = false;
 	private int centerX;
 	private int centerY;
-	private static final int SPLASH_TIME = 5000;
+	private static final int SPLASH_TIME = 3000;
 	@Override
 	public void update(Application app) {
 		centerX = Gdx.graphics.getWidth() / 2;
@@ -46,9 +49,9 @@ public class IntroScreen implements Screen {
 	public void render(Application app) {
 		// TODO Auto-generated method stub
 		spriteBatch.begin();
-		spriteBatch.draw(introTexture, 
-				  centerX - introTexture.getRegionWidth() / 2, 
-				  centerY - introTexture.getRegionHeight() / 2 
+		spriteBatch.draw(introTextureRegion, 
+				  centerX - introTextureRegion.getRegionWidth() / 2, 
+				  centerY - introTextureRegion.getRegionHeight() / 2 
 				  );
 		spriteBatch.end();
 		
@@ -62,8 +65,8 @@ public class IntroScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
-
+		introTexture.dispose();
+		spriteBatch.dispose();
 	}
 
 }

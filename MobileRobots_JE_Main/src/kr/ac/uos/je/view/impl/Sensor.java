@@ -10,6 +10,7 @@ import kr.ac.uos.je.view.interfaces.MapObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Sensor implements MapObject {
 	private final EObjectType objectType;
@@ -64,5 +65,11 @@ public class Sensor implements MapObject {
 	@Override
 	public EObjectType getObjectType() {
 		return this.objectType;
+	}
+
+	@Override
+	public void update(Application app, SpriteBatch spriteBatch) {
+		// TODO Auto-generated method stub
+		
 	}
 }

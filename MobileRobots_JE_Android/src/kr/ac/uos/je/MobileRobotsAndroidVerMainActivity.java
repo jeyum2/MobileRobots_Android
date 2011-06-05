@@ -7,7 +7,6 @@ import kr.ac.uos.je.model.interfaces.ResourceManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnKeyListener;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,16 +20,16 @@ import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  implements AndroidAdaptor{
+public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  implements AndroidAdaptor, View.OnKeyListener, DialogInterface.OnKeyListener{
+	private MobileRobotsFacade mMobileRobotsFacade;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     	EResourceManagerImpl.ResourceManger.initPreferences(getApplicationContext());
-    	AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useWakelock = true;		
-		initialize(new MobileRobotsFacade(EResourceManagerImpl.ResourceManger, this),config);
+		mMobileRobotsFacade = new MobileRobotsFacade(EResourceManagerImpl.ResourceManger, this);
+		initialize(mMobileRobotsFacade,false);
     }	
 	
 	
@@ -53,6 +52,45 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 		super.onDestroy();
 		EResourceManagerImpl.ResourceManger.saveResourceToPreference();
 	}
+	
+	/**
+	 * Touch Input
+	 */
+	
+	
+//	@Override
+//	public boolean onTouchEvent(MotionEvent event) {
+//			
+//		int x = (int) event.getX();
+//		int y = (int) event.getY();
+//	    int act = event.getAction();
+//
+//	    Log.d("TOUCH", String.format("Simple down (%d, %d)", x,y));
+//	    ETouchMode touchMode = ETouchMode.UP;
+//		    
+//	    	switch(act & MotionEvent.ACTION_MASK) {
+//	        case MotionEvent.ACTION_DOWN:    //first finger touch(drag)
+//	            touchMode = ETouchMode.FIRST_DOWN;
+//	            break;
+//	        case MotionEvent.ACTION_MOVE:
+//	        	touchMode = ETouchMode.MOVE;
+//	            break;
+//	        case MotionEvent.ACTION_UP:    // 첫번째 손가락을 떼었을 경우
+//	        case MotionEvent.ACTION_POINTER_UP:  // 두번째 손가락을 떼었을 경우
+//	            break;
+//	        case MotionEvent.ACTION_POINTER_DOWN:  
+//	            break;
+//	        case MotionEvent.ACTION_CANCEL:
+//	        default : 
+//	            break;
+//	    	}
+//		    //!!!!!!! important
+//	    	EMultiTouchController.MultiTouchController.onTouchEvent(touchMode, x,y);
+//		  return true;
+//		}
+
+
+	
 	/**
 	 * Helper Method - bind Java to Android by AndroidAdaptorImpl 
 	 */
@@ -65,6 +103,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 			case AndroidAdaptor.CONNECTION_ACCEPTED :
 				Log.d("ROBOT", "Connection Accepted");
 				if(mProgressDialog.isShowing()) mProgressDialog.dismiss();
+				mMobileRobotsFacade.setScreen(MobileRobotsFacade.EScreenStatus.MainScreen);
 				break;
 			case AndroidAdaptor.CONNECTION_FAIL :
 				Toast.makeText(MobileRobotsAndroidVerMainActivity.this, EResourceManagerImpl.ResourceManger.getStringByStringName("ConnectionFail"), Toast.LENGTH_SHORT).show();
@@ -74,6 +113,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 			}
 		}
 	};
+
 	private Thread robotThread;
 	private void showLoginDialog() {
 		final SharedPreferences mPreference = getPreferences(0);
@@ -81,7 +121,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 		final LinearLayout linear = (LinearLayout)View.inflate(MobileRobotsAndroidVerMainActivity.this, R.layout.login, null);
 		final EditText ipEditText = (EditText) linear.findViewById(R.id.ServerAddressEditText);
 		ipEditText.setText(mPreference.getString("ip", "172.16.164.130"));
-		ipEditText.setOnKeyListener(new BackKeyListener());
+		ipEditText.setOnKeyListener(this);
 		
 		new AlertDialog.Builder(MobileRobotsAndroidVerMainActivity.this)
 		.setTitle("Login")
@@ -120,7 +160,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 		mProgressDialog.setTitle(title);
 		mProgressDialog.setMessage(message);
 		mProgressDialog.show();
-		mProgressDialog.setOnKeyListener(new BackKeyListener());
+		mProgressDialog.setOnKeyListener(this);
 	}
 	
 	@Override
@@ -135,30 +175,42 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 	public ResourceManager getResourceManager() {
 		return EResourceManagerImpl.ResourceManger;
 	}
-	private class BackKeyListener implements View.OnKeyListener, DialogInterface.OnKeyListener{
 
-		@Override
-		public boolean onKey(View v, int keyCode, KeyEvent event) {
-			if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
-				if(quitDialog == null || !quitDialog.isShowing()){
-					showQuitDialog();
-				}
-				return false;
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+			if(quitDialog == null || !quitDialog.isShowing()){
+				showQuitDialog();
 			}
 			return false;
 		}
-
-		@Override
-		public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-			if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
-				if(quitDialog == null || !quitDialog.isShowing()){
-					showQuitDialog();
-				}
-
-				return false;
-			}
-			return false;
-		}
+		return false;
 	}
+
+	@Override
+	public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+			if(quitDialog == null || !quitDialog.isShowing()){
+				showQuitDialog();
+			}
+
+			return false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+			if(quitDialog == null || !quitDialog.isShowing()){
+				showQuitDialog();
+			}
+
+			return false;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
+	
 }
 

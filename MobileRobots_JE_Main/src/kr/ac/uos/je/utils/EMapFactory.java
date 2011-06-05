@@ -101,7 +101,7 @@ public enum EMapFactory {
 		String[] separetedSentence = sentence.split(" ");
 		int x = Integer.valueOf(separetedSentence[1]);
 		int y = Integer.valueOf(separetedSentence[2]);
-		EMapManager.setMinPos(x,y);
+		EMapManager.setMaxPos(x,y);
 	}
 
 	

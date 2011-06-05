@@ -1,6 +1,7 @@
 package kr.ac.uos.je;
 
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
+import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import kr.ac.uos.je.screens.IntroScreen;
 import kr.ac.uos.je.screens.MainScreen;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.Gdx;
 public class MobileRobotsFacade implements ApplicationListener {
 
 	private Screen screen;
-	private enum EScreenStatus{IntroScreen, MainScreen}
+	public enum EScreenStatus{IntroScreen, MainScreen}
 	private EScreenStatus mScreenStatus;
 	public void setScreen(EScreenStatus screenStatus){
 		this.mScreenStatus = screenStatus;
@@ -38,28 +39,27 @@ public class MobileRobotsFacade implements ApplicationListener {
 	}
 	@Override
 	public void create() {
+		EMapManager.MapManager.setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		screen = new IntroScreen(Gdx.app, mAndroidAdaptor);
 		mScreenStatus = EScreenStatus.IntroScreen;
-		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
+		render();
 	}
 
 	@Override
 	public void render() {
 		Application app = Gdx.app;
-
+		
 		// update the screen
 		screen.update(app);
 		// render the screen
 		screen.render(app);
 		
 	}
-
+	
 	@Override
 	public void resize(int width, int height) {
 	}

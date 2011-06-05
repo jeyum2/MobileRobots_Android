@@ -11,7 +11,7 @@ public enum EObjectType{
 	FORBIDDEN_LINE(new float[]{1.0f,0.5f,0.0f,1.0f}),
 	ROBOT_POSITION(new float[]{0.0f,0.0f,0.0f,1.0f}),
 	SENSORS(new float[]{0.0f,0.5f,0.5f,1.0f}),
-	GOALS(new float[]{1.0f,1.0f,0.0f,1.0f}),
+	GOALS(new float[]{1.0f,0.1f,0.1f,1.0f}),
 	PATH(new float[]{0.0f,0.0f,1.0f,1.0f});
 	
 	public final String R_KEY;

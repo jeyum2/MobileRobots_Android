@@ -1,66 +1,56 @@
 package kr.ac.uos.je.screens;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import kr.ac.uos.je.controller.RobotControllerManager;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
+import kr.ac.uos.je.model.EMapManager;
+import kr.ac.uos.je.model.EObjectType;
+import kr.ac.uos.je.utils.OpenGLUtils;
+import kr.ac.uos.je.view.impl.Area;
+import kr.ac.uos.je.view.impl.Goals;
+import kr.ac.uos.je.view.impl.Line;
+import kr.ac.uos.je.view.impl.Point;
+import kr.ac.uos.je.view.interfaces.MapObject;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MainScreen implements Screen {
-
-	public MainScreen(Application app, AndroidAdaptor mAndroidAdaptor) {
-		// TODO Auto-generated constructor stub
-	}
-
-	@Override
-	public void update(Application app) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void render(Application app) {
-		// TODO Auto-generated method stub
-
-	}
-
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-/**
- * 
-	private ResourceManager mResourceManager;
-	private MapManager		mMapManager;
+	private EMapManager		mMapManager;
 	private RobotControllerManager	mRobotManager;
-	private List<MapObject> mapObjectList; 
-	public MobileRobotsMainRenderer(ResourceManager resourceManager, MapManager mapManager, RobotControllerManager robotManager) {
-		this.mResourceManager = resourceManager;
-		this.mMapManager = mapManager;
-		this.mRobotManager = robotManager;
-		
-	}
-	@Override
-	public void create() {
-		initTest();
-		initMapObject();
-		initRobotObject();
-		
-	}
-
+	private List<MapObject> mapObjectList;
+	private AndroidAdaptor mAndroidAdaptor;
 	
-
-	private SpriteBatch testBatch;
-	private BitmapFont	font;
-	private void initTest() {
-		testBatch = new SpriteBatch();
-		font = new BitmapFont();
-		font.setColor(Color.RED);
+	public MainScreen(Application app, AndroidAdaptor mAndroidAdaptor) {
+		this.mAndroidAdaptor = mAndroidAdaptor;
+		spriteBatch = new SpriteBatch();
+		this.mMapManager = EMapManager.MapManager;
+		currentMode = ETouchMode.UP;
+		initMapObject();
+		this.centerX = 0;
+		this.centerY = 0;
+//		initRobotObject();
 	}
-
-
-
-	private Path mPath;
+	private void initMapObject() {
+		this.mapObjectList = new ArrayList<MapObject>();
+		mapObjectList.add(new Line(mMapManager, EObjectType.MAP_LINE));
+		mapObjectList.add(new Point(mMapManager, EObjectType.MAP_POINT));
+		mapObjectList.add(new Area(mMapManager, EObjectType.FORBIDDEN_AREA));
+		mapObjectList.add(new Line(mMapManager, EObjectType.FORBIDDEN_LINE));
+		mapObjectList.add(new Goals(mMapManager, EObjectType.GOALS));
+		
+		
+	}
+	/**
+	 * private Path mPath;
 	private RobotPosition mRobotPosition;
 	private Sensor mSensor;
 	private void initRobotObject() {
@@ -68,29 +58,157 @@ public class MainScreen implements Screen {
 		mRobotPosition = new RobotPosition(mResourceManager, mMapManager, EObjectType.ROBOT_POSITION);
 		mSensor = new Sensor(mResourceManager, mMapManager, EObjectType.SENSORS);
 	}
-	private void initMapObject() {
-		this.mapObjectList = new ArrayList<MapObject>();
-		mapObjectList.add(new Line(mResourceManager, mMapManager, EObjectType.MAP_LINE));
-		mapObjectList.add(new Point(mResourceManager, mMapManager, EObjectType.MAP_POINT));
-		mapObjectList.add(new Area(mResourceManager, mMapManager, EObjectType.FORBIDDEN_AREA));
-		mapObjectList.add(new Line(mResourceManager, mMapManager, EObjectType.FORBIDDEN_LINE));
-//		mapObjectList.add(new Goals(mResourceManager, mMapManager, EObjectType.GOALS));
-	}
+	 */
+
+	private int screenWidth;
+	private int screenHeight;
+	private float zoomRate;
 	@Override
-	public void render() {
-//		camera.update();
-//		camera.projection.setToOrtho2D(0, 0, width*zoomRate, height*zoomRate);
-//		camera.apply(Gdx.gl10);
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+	public void update(Application app) {
+		
+		this.screenWidth = app.getGraphics().getWidth();
+		this.screenHeight = app.getGraphics().getHeight();
+		this.zoomRate = EMapManager.MapManager.getZoomRate();
+		int width = (int)(screenWidth*zoomRate);
+//		if(width <= screenWidth) width = screenWidth;
+		int height = (int) (screenHeight*zoomRate);
+//		if(height <= screenHeight) height = screenHeight;
+		spriteBatch.getProjectionMatrix().setToOrtho2D(centerX-width/2, centerY-height/2, width, height);
+		
+		
+		
+		inputHandling(app.getInput());
+	}
+	private enum ECurrentTouchMode{ NONE, MAP_SCROLL, MANUAL_DRIVE};
+	private int previousX1;
+	private int previousX2;
+	private int previousY1;
+	private int previousY2;
+	private enum ETouchMode{UP, TOUCHED_FIRST_FINGER, TOUCHED_SECOND_FINGER };
+	private ETouchMode currentMode;
+	private void inputHandling(Input input) {
+		switch (currentMode) {
+		case UP:
+			if(input.isTouched(1)){
+				mAndroidAdaptor.printLog("TOUCH_TEST", "UP->DOUBLE TOUCH");
+				currentMode = ETouchMode.TOUCHED_SECOND_FINGER;
+				previousX1 = input.getX(0);
+				previousY1 = input.getY(0);
+				previousX2 = input.getX(1);
+				previousY2 = input.getY(1);
+			}else if(input.isTouched(0)){
+				mAndroidAdaptor.printLog("TOUCH_TEST", "UP->SINGLE TOUCH");
+				currentMode = ETouchMode.TOUCHED_FIRST_FINGER;
+				previousX1 = input.getX();
+				previousY1 = input.getY();
+				previousX2 = -1;
+				previousY2 = -1;
+			}
+			break;
+		case TOUCHED_FIRST_FINGER:
+			if(input.isTouched(1)){
+				mAndroidAdaptor.printLog("TOUCH_TEST", "SINGLE->DOUBLE TOUCH");
+				currentMode = ETouchMode.TOUCHED_SECOND_FINGER;
+				previousX2 = input.getX(1);
+				previousY2 = input.getY(1);
+			}else if(input.isTouched(0)){
+				mAndroidAdaptor.printLog("TOUCH_TEST", "SINGLE DRAG");
+				int x = input.getX();
+				int y = input.getY();
+				int dx = previousX1 - x;
+				int dy = previousY1 - y;
+				if(Math.abs(dx) > 5 || Math.abs(dy)> 5){ // because of human's vibration
+					mAndroidAdaptor.printLog("TOUCH_TEST", "DRAG -> over threshold ");
+					touchDrag(dx, -dy); //beacuse of coordinate system dy is inversed 
+					previousX1 = x;
+					previousY1 = y;
+				}
+			}else if(!input.isTouched()){
+				currentMode = ETouchMode.UP;
+				previousX1 = -1;
+				previousX2 = -1;
+				previousY1 = -1;
+				previousY2 = -1;
+			}
+			break;
+		case TOUCHED_SECOND_FINGER:
+			if(input.isTouched(1)){
+				mAndroidAdaptor.printLog("TOUCH_TEST", "ZOOM OR ROLL");
+				int x1 = input.getX(0);
+				int x2 = input.getX(1);
+				int y1 = input.getY(0);
+				int y2 = input.getY(1);
+				int previousDistance = OpenGLUtils.calculateDistance(previousX1, previousY1, previousX2, previousY2);
+				int currentDistance = OpenGLUtils.calculateDistance(input.getX(0), input.getY(0), input.getX(1), input.getY(1));
+				int dDistance = (previousDistance - currentDistance)/5; 
+//				if(Math.abs(dDistance)>2){
+					mAndroidAdaptor.printLog("TOUCH_TEST", "Zoom");
+					mMapManager.setZoomRate(dDistance);
+					previousX1 = x1;
+					previousX2 = x2;
+					previousY1 = y1;
+					previousY2 = y2;
+//				}
+				//TODO ROLL
+			}else{
+				mAndroidAdaptor.printLog("TOUCH_TEST", "DOUBLE -> RELEASE");
+				//whatever finger released, change status to UP
+				currentMode = ETouchMode.UP;
+				previousX1 = -1;
+				previousY1 = -1;
+				previousX2 = -1;
+				previousY2 = -1;
+			}
+			break;
+		default:
+			break;
+		}
+	}
+	private int centerX;
+	private int centerY;
+	private void touchDrag(int dx, int dy) {
+		centerX += dx*zoomRate;
+		centerY += dy*zoomRate;
+//		mAndroidAdaptor.printLog("TOUCH",String.format("Drag dx:%d, dy:%d",dx,dy));
+		
+	}
+
+	@Override
+	public void render(Application app) {
+		GL10 gl = app.getGraphics().getGL10();
+		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		
 		gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		drawMapObject();
 //		drawRobotObject();
-	}
-	
-	
 
+	}
+	private SpriteBatch spriteBatch;
+	private void drawMapObject() {
+		spriteBatch.setColor(Color.WHITE);
+		spriteBatch.begin();
+		for (MapObject map : mapObjectList) {
+			if(map.getObjectType().isVisible()){
+				map.update(Gdx.app, spriteBatch);
+				map.draw(Gdx.app);
+			}
+		}
+		spriteBatch.end();
+	}
+
+
+	@Override
+	public void dispose() {
+		for (MapObject map : mapObjectList) {
+			map.dispose();
+		}
+		spriteBatch.dispose();
+		//TODO Dispose RbotObject
+		
+
+	}
+/**
+ * 
 	private void drawRobotObject() {
 		Application app =  Gdx.app;
 		mPath.draw(app);
@@ -98,56 +216,7 @@ public class MainScreen implements Screen {
 		mSensor.draw(app);
 		
 	}
-	private void drawMapObject() {
-		testBatch.begin();
-		font.setScale(10.0f, 10.0f);
-		font.draw(testBatch, "Hello World!", 100,300);
-		
-		for (MapObject map : mapObjectList) {
-			if(map.getObjectType().isVisible())map.draw(Gdx.app);
-		}
-			testBatch.end();
-	}
-
-
-	private int width;
-	private int height;
-//	private OrthographicCamera camera;
-	private int zoomRate = 100; 
-	@Override
-	public void resize(int width, int height) {
-		this.width = width;
-		this.height = height;
-//		camera = new OrthographicCamera(width*zoomRate, height*zoomRate);
-		testBatch.getProjectionMatrix().setToOrtho2D(-width*zoomRate/2, -height*zoomRate/2, width*zoomRate, height*zoomRate);
-//		camera.projection.setToOrtho2D(0, 0, width*zoomRate, height*zoomRate);
-		
-//		System.out.println("resize");
-//		GL10 gl = Gdx.graphics.getGL10();
-//		GLU glu = Gdx.graphics.getGLU(); 
-//		gl.glMatrixMode(GL10.GL_PROJECTION);
-//		gl.glLoadIdentity();
-//		glu.gluOrtho2D(gl, 0, 10000, 0, 10000);
-//		  //Projection style by [glOrtho or gluPerspective]
-//		  //Camera setting by gluLookAt
-//		gl.glMatrixMode(GL10.GL_MODELVIEW);
-//		gl.glLoadIdentity();
-	}
-
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
 	
-	@Override
-	public void dispose() {
-		for (MapObject map : mapObjectList) {
-			map.dispose();
-		}
-	}
 
  */
 }

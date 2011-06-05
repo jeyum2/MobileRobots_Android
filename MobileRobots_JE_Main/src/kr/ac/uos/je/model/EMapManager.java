@@ -3,6 +3,7 @@ package kr.ac.uos.je.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EObjectType.AdditionalMapObject;
 import kr.ac.uos.je.utils.EMapFactory;
 import kr.ac.uos.semix2.robot.DataPacket;
@@ -32,12 +33,37 @@ public enum EMapManager {
 		this.mMapStatus = mapStatus;
 	}
 
+	private int mapWidth;
+	private int mapHeight;
+	private float MAX_ZOOM_RATE = -1;
 	private void createMap() {
 		mMapStatus = MapStatus.LoadingComplete;
 		EObjectType.MAP_LINE.setVertices(EMapFactory.integerListToFloatArray(mapLineList));
 		EObjectType.MAP_POINT.setVertices(EMapFactory.integerListToFloatArray(mapPointList));
 		EObjectType.FORBIDDEN_LINE.setVertices(EMapFactory.integerListToFloatArray(forbiddenLineList));
 		EObjectType.FORBIDDEN_AREA.setVertices(EMapFactory.integerListToFloatArray(forbiddenAreaList));
+		
+		setDefaultZoomRate();
+	}
+	
+//	private int normMapSize;
+//	private int normScreenSize;
+	private void setDefaultZoomRate(){
+		this.mapWidth = Math.abs(maxPos[0] - minPos[0]);
+		this.mapHeight = Math.abs(maxPos[1] - minPos[1]);
+
+		
+		
+		if(isScreenDataInitilized){
+			System.out.println("ScreenData Initialized");
+			//TODO map < screenHeight case!! 
+			int heightScale = (mapHeight / screenHeight);
+			int widthScale = (mapWidth / screenWidth);
+			this.zoomRate = (widthScale > heightScale)? widthScale * 1.5f : heightScale * 1.5f;
+			this.MAX_ZOOM_RATE  = this.zoomRate;
+		}else{
+			this.zoomRate = 100;
+		}
 	}
 	public void updateMap(DataPacket packet) {
 		EMapFactory.MapFactory.updateMap(this, packet);
@@ -61,10 +87,17 @@ public enum EMapManager {
 	}
 	private int[] minPos;
 	public int[] getMinPos() {
-		return minPos;
+		return minPos.clone();
 	}
 	public void setMinPos(int x, int y) {
 		minPos = new int[]{x,y};
+	}
+	private int[] maxPos;
+	public int[] getMaxPos() {
+		return maxPos.clone();
+	}
+	public void setMaxPos(int x, int y) {
+		maxPos = new int[]{x,y};
 	}
 	
 	private int resolution;
@@ -85,9 +118,10 @@ public enum EMapManager {
 	}
 	public void addGoal(int x, int y, String description, String iconName,
 			String name, boolean withHeading) {
-		EObjectType.ROBOT_HOME.addAdditionalMapObject(new AdditionalMapObject(x, y, description, iconName, name, withHeading));
+		EObjectType.GOALS.addAdditionalMapObject(new AdditionalMapObject(x, y, description, iconName, name, withHeading));
 		
 	}
+	
 	private List<Integer> forbiddenLineList;
 	public void addForbiddenLine(int x1, int y1, int x2, int y2,
 			String description, String iconName, String name) {
@@ -116,6 +150,34 @@ public enum EMapManager {
 		forbiddenAreaList.add(x1);
 		forbiddenAreaList.add(y2);
 		forbiddenAreaList.add(0);
+	}
+	
+	private float zoomRate;
+	private static final float MIN_ZOOM_RATE = 5;
+	public void setZoomRate(float zoomRate){
+		zoomRate += this.zoomRate;
+		
+		if(MAX_ZOOM_RATE > 0 && zoomRate > MAX_ZOOM_RATE){
+			zoomRate = MAX_ZOOM_RATE;
+		}
+		
+		if(zoomRate <= MIN_ZOOM_RATE){
+			this.zoomRate = MIN_ZOOM_RATE;
+		}else{
+			this.zoomRate = zoomRate;
+		}
+		
+	}
+	public float getZoomRate() {
+		return this.zoomRate;
+	}
+	private int screenWidth;
+	private int screenHeight;
+	private boolean isScreenDataInitilized = false;
+	public void setScreenSize(int width, int height) {
+		this.screenWidth = width;
+		this.screenHeight = height;
+		this.isScreenDataInitilized = true;
 	}
 	
 }

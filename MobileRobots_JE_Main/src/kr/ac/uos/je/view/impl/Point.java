@@ -10,15 +10,14 @@ import kr.ac.uos.je.view.interfaces.MapObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Point implements MapObject {
 	private final EObjectType objectType;
 	private EMapManager mMapManager;
-	private ResourceManager mResourceManager;
 
-	public Point(ResourceManager mResourceManager, EMapManager mMapManager, EObjectType objectType) {
+	public Point(EMapManager mMapManager, EObjectType objectType) {
 		this.mMapManager = mMapManager;
-		this.mResourceManager = mResourceManager;
 		this.objectType = objectType;
 	}
 
@@ -65,5 +64,11 @@ public class Point implements MapObject {
 	@Override
 	public EObjectType getObjectType() {
 		return this.objectType;
+	}
+
+	@Override
+	public void update(Application app, SpriteBatch spriteBatch) {
+		// TODO Auto-generated method stub
+		
 	}
 }
