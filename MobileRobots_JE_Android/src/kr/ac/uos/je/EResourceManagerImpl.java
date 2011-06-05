@@ -5,18 +5,18 @@ import kr.ac.uos.je.model.interfaces.ResourceManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
+import android.util.Log;
 
 public enum EResourceManagerImpl implements ResourceManager{
 	ResourceManger;
 	
-	@Override
-	public String getStringByKey(String key) {
-		return mPreferences.getString(key, "String not found");
-	}
 
 
 	private SharedPreferences mPreferences;
+	private Context context;
 	public void initPreferences(Context applicationContext) {
+		this.context = applicationContext;
 		mPreferences = applicationContext.getSharedPreferences("resourceManager", 0);
 		initResource();
 	}
@@ -34,9 +34,15 @@ public enum EResourceManagerImpl implements ResourceManager{
 			
 		}
 		edit.commit();
+		Log.d("ROBOT", "SAVE PREFERENCE");
 		
 	}
+
 	public void initResource(){
+		
+		 /*
+		  * Load MapObject property
+		  */
 		for (EObjectType objectType : EObjectType.values()){
 			objectType.setColor(new float[]{
 			mPreferences.getFloat(objectType.R_KEY, objectType.getDefaultColor()[0])
@@ -49,6 +55,19 @@ public enum EResourceManagerImpl implements ResourceManager{
 		}
 		
 	}
+
+
+	/**
+	 * because of localization, Load string resource from string.xml 
+	 */
+	@Override
+	public String getStringByStringName(String name) {
+		
+		int id = context.getResources().getIdentifier(name, "string", context.getPackageName());
+		return (id != 0)? context.getResources().getString(id) : "String not found";
+	}
+
+	
 
 
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, MobileRobotsAndroidVerMainActivity!</string>
     <string name="app_name">MobileRobots</string>
+    <string name="ConnectionFail">Connection Fail..Check and Try Again!</string>
+    <string name="Progress_Title_Login">Login</string>
+    <string name="Progress_Message_Login">Please Wait..</string>
 </resources>

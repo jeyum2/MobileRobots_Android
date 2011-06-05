@@ -5,6 +5,7 @@ import java.util.List;
 
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.exceptions.RobotControllerException;
+import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.semix2.robot.Command;
 import kr.ac.uos.semix2.robot.DataPacket;
 import kr.ac.uos.semix2.robot.DataPacketHandler;
@@ -23,13 +24,16 @@ public class RobotControllerManager implements Runnable{
 	private String ip;
 	private static RobotControllerManager INSTANCE;
 	private AndroidAdaptor androidAdaptor;
-	public static RobotControllerManager initRobotClient(String ip, AndroidAdaptor mHandler) throws RobotControllerException{
+	public static RobotControllerManager initRobotClient(String ip, AndroidAdaptor androidAdaptor) throws RobotControllerException{
+		
 		if (INSTANCE == null) INSTANCE = new RobotControllerManager();
 		INSTANCE.ip = ip;
+		
+		INSTANCE.setAndroidAdaptor(androidAdaptor);
 
 		return getRobotClient();
 	}
-	public static RobotControllerManager getRobotClient() throws RobotControllerException{
+	public static RobotControllerManager getRobotClient() throws RobotControllerException {
 		if(INSTANCE == null){
 			throw new RobotControllerException("There is no available robot");
 		}
@@ -48,14 +52,16 @@ public class RobotControllerManager implements Runnable{
 		client.setHost(ip);
 		
 		if (!client.connect()) {
-			try {
-				throw new RobotControllerException("connection failed.");
-			} catch (RobotControllerException e) {
-				e.printStackTrace();
-			}
+			androidAdaptor.sendEmptyMessage(AndroidAdaptor.CONNECTION_FAIL);
+			return;
 		}
-		androidAdaptor.sendEmptyMessage(AndroidAdaptor.CONNECTION_COMPLETE);
 		
+				
+//				throw new RobotControllerException("connection failed.");
+//			} catch (RobotControllerException e) {
+//				e.printStackTrace();
+//			}
+		androidAdaptor.sendEmptyMessage(AndroidAdaptor.CONNECTION_ACCEPTED);
 		getMapBinaryCommand();
 //		getDrawingListCommand();
 //		updateCommand();
@@ -70,7 +76,7 @@ public class RobotControllerManager implements Runnable{
 		//get map
 		client.addDataPacketHandler(getMapBinaryCommand, new DataPacketHandler() {
 			public void handleDataPacket(DataPacket packet) {
-				androidAdaptor.getMapManager().updateMap(packet);
+				EMapManager.MapManager.updateMap(packet);
 			}
 		});
 		client.request(getMapBinaryCommand);
@@ -80,6 +86,9 @@ public class RobotControllerManager implements Runnable{
 	
 	public void disconnect(){
 		client.disconnect();
+	}
+	public void setAndroidAdaptor(AndroidAdaptor androidAdaptor) {
+		this.androidAdaptor = androidAdaptor;
 	}
 	
 	

@@ -2,8 +2,8 @@ package kr.ac.uos.je.view.impl;
 
 import java.nio.FloatBuffer;
 
+import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.model.interfaces.MapManager;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import kr.ac.uos.je.utils.OpenGLUtils;
 import kr.ac.uos.je.view.interfaces.MapObject;
@@ -13,10 +13,10 @@ import com.badlogic.gdx.graphics.GL10;
 
 public class Sensor implements MapObject {
 	private final EObjectType objectType;
-	private MapManager mMapManager;
+	private EMapManager mMapManager;
 	private ResourceManager mResourceManager;
 
-	public Sensor(ResourceManager mResourceManager, MapManager mMapManager, EObjectType objectType) {
+	public Sensor(ResourceManager mResourceManager, EMapManager mMapManager, EObjectType objectType) {
 		this.mMapManager = mMapManager;
 		this.mResourceManager = mResourceManager;
 		this.objectType = objectType;
@@ -28,10 +28,12 @@ public class Sensor implements MapObject {
 	private FloatBuffer pointVertexBuffer;
 	@Override
 	public void draw(Application app) {
-		if(pointVertices == null && mMapManager.getMapStatus() == MapManager.MapStatus.LoadingComplete){
+		if(pointVertices == null && mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete){
 			pointVertices = objectType.getVertices();
-			pointVertexBuffer = OpenGLUtils.arrayToFloatBuffer(pointVertices);
-			color = objectType.getColor();
+			if(pointVertices != null){
+				pointVertexBuffer = OpenGLUtils.arrayToFloatBuffer(pointVertices);
+				color = objectType.getColor();
+			}
 		}
 		if(objectType.isColorChanged()){
 			color = objectType.getColor();

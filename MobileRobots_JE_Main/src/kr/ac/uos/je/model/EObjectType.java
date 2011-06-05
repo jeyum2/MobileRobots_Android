@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum EObjectType{
-	ROBOT_HOME(new float[]{0.5f,0.5f,0.5f,1.0f}),
-	FORBIDDEN_AREA(new float[]{0.0f,0.0f,0.0f,1.0f}),
+	ROBOT_HOME(new float[]{0.5f,0.5f,1.0f,1.0f}),
+	FORBIDDEN_AREA(new float[]{1.0f,1.0f,0.0f,1.0f}),
 	MAP_LINE(new float[]{0.0f,0.0f,0.0f,1.0f}),
 	MAP_POINT(new float[]{0.0f,0.0f,0.0f,1.0f}),
-	FORBIDDEN_LINE(new float[]{0.0f,0.0f,0.0f,1.0f}),
+	FORBIDDEN_LINE(new float[]{1.0f,0.5f,0.0f,1.0f}),
 	ROBOT_POSITION(new float[]{0.0f,0.0f,0.0f,1.0f}),
-	SENSORS(new float[]{0.0f,0.0f,0.0f,1.0f}),
-	GOALS(new float[]{0.0f,0.0f,0.0f,1.0f}),
-	PATH(new float[]{0.0f,0.0f,0.0f,1.0f});
+	SENSORS(new float[]{0.0f,0.5f,0.5f,1.0f}),
+	GOALS(new float[]{1.0f,1.0f,0.0f,1.0f}),
+	PATH(new float[]{0.0f,0.0f,1.0f,1.0f});
 	
 	public final String R_KEY;
 	public final String G_KEY;
@@ -26,6 +26,7 @@ public enum EObjectType{
 		this.ALPHA_KEY = name()+"a";
 		this.isColorChanged = false;
 		additionalMapObjectList = new ArrayList<AdditionalMapObject>();
+		this.defaultColor = defaultColor;
 	}
 
 	private boolean isVisible;
