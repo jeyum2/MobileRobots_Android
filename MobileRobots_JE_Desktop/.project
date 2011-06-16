@@ -18,7 +18,7 @@
 		<link>
 			<name>assets</name>
 			<type>2</type>
-			<location>D:/WorkSpace/AndroidWork/MobileRobots_JE/MobileRobots_JE_Android/assets</location>
+			<location>/home/jee/workspace/androidWork/MobileRobots_JE/MobileRobots_JE_Android/assets</location>
 		</link>
 	</linkedResources>
 </projectDescription>

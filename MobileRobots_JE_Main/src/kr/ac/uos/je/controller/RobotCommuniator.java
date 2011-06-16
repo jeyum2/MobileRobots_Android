@@ -1,39 +1,35 @@
 package kr.ac.uos.je.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.exceptions.RobotControllerException;
 import kr.ac.uos.je.model.EMapManager;
+import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.semix2.robot.Command;
 import kr.ac.uos.semix2.robot.DataPacket;
 import kr.ac.uos.semix2.robot.DataPacketHandler;
 import kr.ac.uos.semix2.robot.DataPacketIterator;
-import kr.ac.uos.semix2.robot.Parameter;
-import kr.ac.uos.semix2.robot.ParameterBuilder;
 import kr.ac.uos.semix2.robot.RobotClient;
 import kr.ac.uos.semix2.robot.RobotClientFactory;
 
-public class RobotControllerManager implements Runnable{
+public class RobotCommuniator implements Runnable{
 	
-	private RobotControllerManager() {
+	private RobotCommuniator() {
 		// TODO Auto-generated constructor stub
 	}
 	
 	private String ip;
-	private static RobotControllerManager INSTANCE;
+	private static RobotCommuniator INSTANCE;
 	private AndroidAdaptor androidAdaptor;
-	public static RobotControllerManager initRobotClient(String ip, AndroidAdaptor androidAdaptor) throws RobotControllerException{
+	public static RobotCommuniator initRobotClient(String ip, AndroidAdaptor androidAdaptor) throws RobotControllerException{
 		
-		if (INSTANCE == null) INSTANCE = new RobotControllerManager();
+		if (INSTANCE == null) INSTANCE = new RobotCommuniator();
 		INSTANCE.ip = ip;
 		
 		INSTANCE.setAndroidAdaptor(androidAdaptor);
 
 		return getRobotClient();
 	}
-	public static RobotControllerManager getRobotClient() throws RobotControllerException {
+	public static RobotCommuniator getRobotClient() throws RobotControllerException {
 		if(INSTANCE == null){
 			throw new RobotControllerException("There is no available robot");
 		}
@@ -63,9 +59,9 @@ public class RobotControllerManager implements Runnable{
 //			}
 		androidAdaptor.sendEmptyMessage(AndroidAdaptor.CONNECTION_ACCEPTED);
 		getMapBinaryCommand();
+		getPathCommand();
+		updateCommand();
 //		getDrawingListCommand();
-//		updateCommand();
-//		getPathCommand();
 //		getSensorList();
 //		getSensorCurrent();
 	}
@@ -93,51 +89,50 @@ public class RobotControllerManager implements Runnable{
 	
 	
 
-//	private void getPathCommand() {
-//		//path
-//		Command getPathCommand = client.getCommand("getPath");
-//		client.addDataPacketHandler(getPathCommand, new DataPacketHandler() {
-//			public void handleDataPacket(DataPacket packet) {
-//				DataPacketIterator iter = packet.getDataPacketIterator();
-//				int numOfPoints 	= iter.nextByte2();
-//				float[] path = new float[numOfPoints*3];
-//				for (int i = 0; i < numOfPoints; i++) {
-//					//X
-//					path[i*3] = iter.nextByte4();
-//					//Y
-//					path[i*3+1] = iter.nextByte4();
-//					//Z
-//					path[i*3+2] = 0.0f;
-//				}
-////				ERobotStatus.ROBOT.setRobotPath(path);
-//			}
-//		});
-//		client.request(getPathCommand, 200);
-//	
-//	}
-//		
-//	private void updateCommand() {
-//		//update
-//		Command updateCommand = client.getCommand("update");
-//		client.addDataPacketHandler(updateCommand, new DataPacketHandler() {
-//			public void handleDataPacket(DataPacket packet) {
-//				DataPacketIterator iter = packet.getDataPacketIterator();
-//				String status 		= iter.nextString();
-//				String mode 		= iter.nextString();
-//				double voltage 		= iter.nextByte2() / 10.0;
-//				int x 				= iter.nextByte4();
-//				int y 				= iter.nextByte4();
-//				int th 			= iter.nextByte2();
-//				int velocity 		= iter.nextByte2();
-//				int rotateVelocity 	= iter.nextByte2();
-//				
-////				ERobotStatus.ROBOT.setRobotPosition(x, y, th);
-////					System.out.println(String.format("x: %6d| y: %6d| head: %6d| vel: %6d| rotVel: %6d| volts: %6.1f| mode: %15s| status: %20s|", x, y, head, velocity, rotateVelocity, voltage, mode, status));
-//			}
-//		});
-//		client.request(updateCommand, 200);
-//		
-//	}
+	private void getPathCommand() {
+		//path
+		Command getPathCommand = client.getCommand("getPath");
+		client.addDataPacketHandler(getPathCommand, new DataPacketHandler() {
+			public void handleDataPacket(DataPacket packet) {
+				DataPacketIterator iter = packet.getDataPacketIterator();
+				int numOfPoints 	= iter.nextByte2();
+				float[] path = new float[numOfPoints*3];
+				for (int i = 0; i < numOfPoints; i++) {
+					//X
+					path[i*3] = iter.nextByte4();
+					//Y
+					path[i*3+1] = iter.nextByte4();
+					//Z
+					path[i*3+2] = 0.0f;
+				}
+				EObjectType.PATH.setVertices(path);
+			}
+		});
+		client.request(getPathCommand, 200);
+	
+	}
+		
+	private void updateCommand() {
+		//update
+		Command updateCommand = client.getCommand("update");
+		client.addDataPacketHandler(updateCommand, new DataPacketHandler() {
+			public void handleDataPacket(DataPacket packet) {
+				DataPacketIterator iter = packet.getDataPacketIterator();
+				String status 		= iter.nextString();
+				String mode 		= iter.nextString();
+				double voltage 		= iter.nextByte2() / 10.0;
+				int x 				= iter.nextByte4();
+				int y 				= iter.nextByte4();
+				int th 			= iter.nextByte2();
+				int velocity 		= iter.nextByte2();
+				int rotateVelocity 	= iter.nextByte2();
+				
+				EObjectType.ROBOT_POSITION.setVertices(new float[]{x,y, th, velocity, rotateVelocity});
+			}
+		});
+		client.request(updateCommand, 200);
+		
+	}
 
 //	
 //	public void gotoGoal(String goal){

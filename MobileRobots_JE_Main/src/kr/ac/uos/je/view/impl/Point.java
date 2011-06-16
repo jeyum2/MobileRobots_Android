@@ -6,13 +6,13 @@ import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import kr.ac.uos.je.utils.OpenGLUtils;
-import kr.ac.uos.je.view.interfaces.MapObject;
+import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Point implements MapObject {
+public class Point implements DrawObject {
 	private final EObjectType objectType;
 	private EMapManager mMapManager;
 

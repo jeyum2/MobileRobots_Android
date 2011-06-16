@@ -60,9 +60,17 @@ public enum EObjectType{
 	}
 	
 	private float[] vertices;
+	/**
+	 * When RobotPosition : x, y, th, velocity, rotateVelocity
+	 * @param vertices
+	 */
 	public void setVertices(float[] vertices){
 		this.vertices = vertices;
 	}
+	/**
+	 * When RobotPosition : x, y, th, velocity, rotateVelocity
+	 * @param vertices
+	 */
 	public float[] getVertices(){
 		return this.vertices;
 	}

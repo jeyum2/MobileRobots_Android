@@ -6,20 +6,18 @@ import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import kr.ac.uos.je.utils.OpenGLUtils;
-import kr.ac.uos.je.view.interfaces.MapObject;
+import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Path implements MapObject {
+public class Path implements DrawObject {
 	private final EObjectType objectType;
 	private EMapManager mMapManager;
-	private ResourceManager mResourceManager;
 
-	public Path(ResourceManager mResourceManager, EMapManager mMapManager, EObjectType objectType) {
+	public Path(EMapManager mMapManager, EObjectType objectType) {
 		this.mMapManager = mMapManager;
-		this.mResourceManager = mResourceManager;
 		this.objectType = objectType;
 	}
 

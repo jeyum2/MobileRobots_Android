@@ -3,7 +3,7 @@ package kr.ac.uos.je.screens;
 import java.util.ArrayList;
 import java.util.List;
 
-import kr.ac.uos.je.controller.RobotControllerManager;
+import kr.ac.uos.je.controller.RobotCommuniator;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
@@ -11,8 +11,10 @@ import kr.ac.uos.je.utils.OpenGLUtils;
 import kr.ac.uos.je.view.impl.Area;
 import kr.ac.uos.je.view.impl.Goals;
 import kr.ac.uos.je.view.impl.Line;
+import kr.ac.uos.je.view.impl.Path;
 import kr.ac.uos.je.view.impl.Point;
-import kr.ac.uos.je.view.interfaces.MapObject;
+import kr.ac.uos.je.view.impl.RobotPosition;
+import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -25,8 +27,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MainScreen implements Screen {
 	private EMapManager		mMapManager;
-	private RobotControllerManager	mRobotManager;
-	private List<MapObject> mapObjectList;
+	private RobotCommuniator	mRobotManager;
+	private List<DrawObject> objectList;
 	private AndroidAdaptor mAndroidAdaptor;
 	
 	public MainScreen(Application app, AndroidAdaptor mAndroidAdaptor) {
@@ -40,12 +42,19 @@ public class MainScreen implements Screen {
 //		initRobotObject();
 	}
 	private void initMapObject() {
-		this.mapObjectList = new ArrayList<MapObject>();
-		mapObjectList.add(new Line(mMapManager, EObjectType.MAP_LINE));
-		mapObjectList.add(new Point(mMapManager, EObjectType.MAP_POINT));
-		mapObjectList.add(new Area(mMapManager, EObjectType.FORBIDDEN_AREA));
-		mapObjectList.add(new Line(mMapManager, EObjectType.FORBIDDEN_LINE));
-		mapObjectList.add(new Goals(mMapManager, EObjectType.GOALS));
+		this.objectList = new ArrayList<DrawObject>();
+		
+		objectList.add(new Path(mMapManager, EObjectType.PATH));
+		objectList.add(new RobotPosition(mMapManager, EObjectType.ROBOT_POSITION));
+		
+		
+		
+		objectList.add(new Line(mMapManager, EObjectType.MAP_LINE));
+		objectList.add(new Point(mMapManager, EObjectType.MAP_POINT));
+		objectList.add(new Area(mMapManager, EObjectType.FORBIDDEN_AREA));
+		objectList.add(new Line(mMapManager, EObjectType.FORBIDDEN_LINE));
+		objectList.add(new Goals(mMapManager, EObjectType.GOALS));
+		
 		
 		
 	}
@@ -187,7 +196,7 @@ public class MainScreen implements Screen {
 	private void drawMapObject() {
 		spriteBatch.setColor(Color.WHITE);
 		spriteBatch.begin();
-		for (MapObject map : mapObjectList) {
+		for (DrawObject map : objectList) {
 			if(map.getObjectType().isVisible()){
 				map.update(Gdx.app, spriteBatch);
 				map.draw(Gdx.app);
@@ -199,7 +208,7 @@ public class MainScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		for (MapObject map : mapObjectList) {
+		for (DrawObject map : objectList) {
 			map.dispose();
 		}
 		spriteBatch.dispose();

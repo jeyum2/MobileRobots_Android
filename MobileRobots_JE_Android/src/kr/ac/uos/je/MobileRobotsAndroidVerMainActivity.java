@@ -1,6 +1,6 @@
 package kr.ac.uos.je;
 
-import kr.ac.uos.je.controller.RobotControllerManager;
+import kr.ac.uos.je.controller.RobotCommuniator;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.exceptions.RobotControllerException;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
@@ -135,7 +135,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 				edit.commit();
 				
 				try {
-					robotThread = new Thread(RobotControllerManager.initRobotClient(ip, MobileRobotsAndroidVerMainActivity.this));
+					robotThread = new Thread(RobotCommuniator.initRobotClient(ip, MobileRobotsAndroidVerMainActivity.this));
 				} catch (RobotControllerException e) {
 					Toast.makeText(MobileRobotsAndroidVerMainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 					mProgressDialog.dismiss();

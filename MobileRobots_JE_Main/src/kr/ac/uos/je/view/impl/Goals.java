@@ -5,7 +5,7 @@ import java.util.List;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.EObjectType.AdditionalMapObject;
-import kr.ac.uos.je.view.interfaces.MapObject;
+import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Goals implements MapObject {
+public class Goals implements DrawObject {
 	private final EObjectType objectType;
 	private EMapManager mMapManager;
 	private SpriteBatch spriteBatch;

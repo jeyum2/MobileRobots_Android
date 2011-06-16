@@ -6,7 +6,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
-public interface MapObject {
+public interface DrawObject {
 
 	public EObjectType getObjectType();
 	public void draw (Application app);

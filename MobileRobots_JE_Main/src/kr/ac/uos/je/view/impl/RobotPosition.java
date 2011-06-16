@@ -1,58 +1,44 @@
 package kr.ac.uos.je.view.impl;
 
-import java.nio.FloatBuffer;
-
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.model.interfaces.ResourceManager;
-import kr.ac.uos.je.utils.OpenGLUtils;
-import kr.ac.uos.je.view.interfaces.MapObject;
+import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class RobotPosition implements MapObject {
+public class RobotPosition implements DrawObject {
 	private final EObjectType objectType;
 	private EMapManager mMapManager;
-	private ResourceManager mResourceManager;
 
-	public RobotPosition(ResourceManager mResourceManager, EMapManager mMapManager, EObjectType forbiddenArea) {
+	public RobotPosition(EMapManager mMapManager, EObjectType forbiddenArea) {
 		this.mMapManager = mMapManager;
-		this.mResourceManager = mResourceManager;
 		this.objectType = forbiddenArea;
 	}
 
 
-	private float[] pointVertices;
-	private float[] color;
-	private FloatBuffer pointVertexBuffer;
+//	private float[] color;
+	private float robotX;
+	private float robotY;
 	@Override
 	public void draw(Application app) {
-		if(pointVertices == null && mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete){
-			pointVertices = objectType.getVertices();
-			if(pointVertices != null){
-				pointVertexBuffer = OpenGLUtils.arrayToFloatBuffer(pointVertices);
-				color = objectType.getColor();
-			}
-		}
-		if(objectType.isColorChanged()){
-			color = objectType.getColor();
-		}
-		if(pointVertices != null && objectType.isVisible()){
+//		if(color == null || objectType.isColorChanged()){
+//			color = objectType.getColor();
+//		}
+		if(mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete && objectType.isVisible()){
+			robotX = objectType.getVertices()[0];
+			robotY = objectType.getVertices()[1];
 			GL10 gl = app.getGraphics().getGL10();
 			gl.glLoadIdentity();
 			gl.glPushMatrix();
 			
-			gl.glColor4f(color[0],color[1],color[2],color[3]);
-			//Point to our vertex buffer
-			gl.glVertexPointer(3, GL10.GL_FLOAT, 0, pointVertexBuffer);
-			//Enable vertex buffer
-			gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
-			//Draw the vertices as lines (1 line = 2 points)
-			gl.glDrawArrays(GL10.GL_LINE_LOOP, 0, pointVertices.length / 3);
-			//Disable the client state before leaving
-			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+			spriteBatch.draw(robotTexture, 
+					  robotX, robotY, 
+					  0, 0,robotTexture.getWidth() , robotTexture.getHeight());		
+			
 			gl.glPopMatrix();
 		}
 	}
@@ -67,9 +53,16 @@ public class RobotPosition implements MapObject {
 		return this.objectType;
 	}
 
+	private Texture robotTexture;
+	private SpriteBatch spriteBatch;
 	@Override
 	public void update(Application app, SpriteBatch spriteBatch) {
-		// TODO Auto-generated method stub
+		if(robotTexture == null){
+			this.robotTexture = new Texture(Gdx.files.internal("data/robotcursor.png"));
+		}
+		if(this.spriteBatch == null){
+			this.spriteBatch = spriteBatch;
+		}
 		
 	}
 }
