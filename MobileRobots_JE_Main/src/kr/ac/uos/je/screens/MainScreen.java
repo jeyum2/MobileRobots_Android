@@ -42,6 +42,7 @@ public class MainScreen implements Screen {
 //		initRobotObject();
 	}
 	private void initMapObject() {
+		//Be careful spriteBatch, texure drawing has some bug.
 		this.objectList = new ArrayList<DrawObject>();
 		
 		objectList.add(new Path(mMapManager, EObjectType.PATH));
