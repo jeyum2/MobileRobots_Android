@@ -48,7 +48,6 @@ public class MainScreen implements Screen {
 		objectList.add(new RobotPosition(mMapManager, EObjectType.ROBOT_POSITION));
 		
 		
-		
 		objectList.add(new Line(mMapManager, EObjectType.MAP_LINE));
 		objectList.add(new Point(mMapManager, EObjectType.MAP_POINT));
 		objectList.add(new Area(mMapManager, EObjectType.FORBIDDEN_AREA));
