@@ -3,22 +3,27 @@ package kr.ac.uos.je;
 import kr.ac.uos.je.controller.RobotCommuniator;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.exceptions.RobotControllerException;
+import kr.ac.uos.je.model.EMapManager;
+import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
 public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  implements AndroidAdaptor, View.OnKeyListener, DialogInterface.OnKeyListener{
 	private MobileRobotsFacade mMobileRobotsFacade;
@@ -211,6 +216,67 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 		return super.onKeyDown(keyCode, event);
 	}
 
+	
+	/**
+	 * Menu
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		new MenuInflater(this).inflate(R.menu.robotcontrolmenu, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		
+		switch (item.getItemId()){
+			case R.id.Menu_DisplaySetting:
+//				startActivity(new Intent(MobileRobotsAndroidVerMainActivity.this, DisplaySettingActivity.class));
+				return true;
+			case R.id.Menu_GetGoalList:
+				showGoalListMenu();
+				return true;
+			case R.id.Menu_CenterOnRobot:
+//				Toast.makeText(getApplicationContext(), EDisplayMode.MODE.setCenterOnRobotMode(), Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.Menu_ForceStop:
+			try {
+				RobotCommuniator.getRobotClient().forceStop();
+				} catch (RobotControllerException e) {
+					e.printStackTrace();
+				}
+				Toast.makeText(getApplicationContext(), "Force Stop", Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.Menu_ManualDrive:
+//				showChoiceManualDrive();
+				return true;
+			case R.id.Menu_Preference:
+//				showPreferenceList();
+			default :
+				break;
+		}
+	    return super.onOptionsItemSelected(item);
+	}
+
+	private void showGoalListMenu() {
+		final String[] goalList = EObjectType.GOALS.getSubObjectNames(); 
+		new AlertDialog.Builder(MobileRobotsAndroidVerMainActivity.this)
+        .setTitle("Goal List")
+        .setItems(goalList, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            	String goal = goalList[which];
+            	Toast.makeText(getApplicationContext(), "Go to "+ goal, Toast.LENGTH_SHORT).show();
+            	try {
+					RobotCommuniator.getRobotClient().gotoGoal(goal);
+				} catch (RobotControllerException e) {
+					e.printStackTrace();
+				}
+            }
+        })
+        .create().show();
+	}
+
+
+	
 	
 }
 

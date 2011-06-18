@@ -2,10 +2,12 @@ package kr.ac.uos.je.view.impl;
 
 import java.nio.FloatBuffer;
 
+import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
-import kr.ac.uos.je.utils.OpenGLUtils;
+import kr.ac.uos.je.tools.InvertedTriangleMesh;
+import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
@@ -51,6 +53,18 @@ public class Path implements DrawObject {
 					gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, pointVertices.length / 3);
 					//Disable the client state before leaving
 					gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+					
+					//When has Path
+					if(pointVertices.length > 3){
+						float endPointX = pointVertices[pointVertices.length-3];
+						float endPointY = pointVertices[pointVertices.length-2];
+						System.out.println("Point = " + endPointX + "," + endPointY);
+						gl.glTranslatef(endPointX, endPointY, 0.0f);
+						gl.glScalef(100, 100, 0.0f);
+						InvertedTriangleMesh.getMesh().render();
+					}
+					
+					
 					gl.glPopMatrix();
 				}
 			}

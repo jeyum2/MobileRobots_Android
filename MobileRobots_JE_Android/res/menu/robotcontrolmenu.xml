@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+ 	
+ 	    	
+    <group android:id="@+id/group1">
+	    
+	 	<item android:id="@+id/Menu_GetGoalList"
+	    	android:title="@string/GetGoalList"  />
+	    <item android:id="@+id/Menu_CenterOnRobot"
+	    	android:title="@string/CenterOnRobot"  />
+    </group>
+    
+    <item android:id="@+id/Menu_ManualDrive"
+	    	android:title="@string/ManualDrive"  />
+    <group android:id="@+id/group2">
+	    
+	    <item android:id="@+id/Menu_ForceStop"
+	    	android:title="@string/ForceStop"  />
+    </group>
+    
+    <item android:id="@+id/Menu_DisplaySetting"
+	    	android:title="@string/DisplaySetting"  />
+	<item android:id="@+id/Menu_Preference"
+	    	android:title="@string/Preference"  />
+	
+    
+
+</menu>

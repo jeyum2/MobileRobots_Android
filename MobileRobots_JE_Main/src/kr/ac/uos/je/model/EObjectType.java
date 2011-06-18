@@ -1,6 +1,7 @@
 package kr.ac.uos.je.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public enum EObjectType{
@@ -25,7 +26,7 @@ public enum EObjectType{
 		this.B_KEY = name()+"b";
 		this.ALPHA_KEY = name()+"a";
 		this.isColorChanged = false;
-		additionalMapObjectList = new ArrayList<AdditionalMapObject>();
+		subObjectList = new ArrayList<SubObject>();
 		this.defaultColor = defaultColor;
 	}
 
@@ -96,21 +97,31 @@ public enum EObjectType{
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
 	}
-	private List<AdditionalMapObject> additionalMapObjectList;
-	public void addAdditionalMapObject(AdditionalMapObject additionalMapObject){
-		additionalMapObjectList.add(additionalMapObject);
+	private List<SubObject> subObjectList;
+	public void addSubObject(SubObject additionalMapObject){
+		subObjectList.add(additionalMapObject);
 	}
-	public List<AdditionalMapObject> getAdditionalMapObject(){
-		return additionalMapObjectList;
+	public List<SubObject> getSubObjects(){
+		return subObjectList;
 	}
-	public static class AdditionalMapObject{
+	public String[] getSubObjectNames(){
+		String[] nameList = new String[subObjectList.size()];
+		for (int i = 0; i < nameList.length; i++) {
+			nameList[i] = subObjectList.get(i).getName();
+		}
+		return nameList;
+	}
+	public void sortSubObjectByname(){
+		Collections.sort(subObjectList);
+	}
+	public static class SubObject implements Comparable<SubObject>{
 		private final int x;
 		private final int y;
 		private final String description;
 		private final String iconName;
 		private final String name;
 		private final boolean additionalFunc;
-		public AdditionalMapObject(int x, int y, String description, String iconName, String name, boolean additionalFunc) {
+		public SubObject(int x, int y, String description, String iconName, String name, boolean additionalFunc) {
 			this.x = x;
 			this.y = y;
 			this.description = description;
@@ -135,6 +146,10 @@ public enum EObjectType{
 		}
 		public boolean isAdditionalFunc() {
 			return additionalFunc;
+		}
+		@Override
+		public int compareTo(SubObject s) {
+			return name.compareTo(s.name);
 		}
 		
 	}

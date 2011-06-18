@@ -8,6 +8,7 @@ import kr.ac.uos.semix2.robot.Command;
 import kr.ac.uos.semix2.robot.DataPacket;
 import kr.ac.uos.semix2.robot.DataPacketHandler;
 import kr.ac.uos.semix2.robot.DataPacketIterator;
+import kr.ac.uos.semix2.robot.ParameterBuilder;
 import kr.ac.uos.semix2.robot.RobotClient;
 import kr.ac.uos.semix2.robot.RobotClientFactory;
 
@@ -135,12 +136,12 @@ public class RobotCommuniator implements Runnable{
 	}
 
 //	
-//	public void gotoGoal(String goal){
-//		Command gotoCommand = client.getCommand("gotoGoal");
-//		ParameterBuilder paramBuilder =  new ParameterBuilder();
-//		paramBuilder.appendString(goal);
-//		client.request(gotoCommand, paramBuilder.toParameter());
-//	}
+	public void gotoGoal(String goal){
+		Command gotoCommand = client.getCommand("gotoGoal");
+		ParameterBuilder paramBuilder =  new ParameterBuilder();
+		paramBuilder.appendString(goal);
+		client.request(gotoCommand, paramBuilder.toParameter());
+	}
 //	public void getSensorList() {
 //		Command getSensorList = client.getCommand("getSensorList");
 //		client.request(getSensorList);
@@ -235,13 +236,13 @@ public class RobotCommuniator implements Runnable{
 //		client.stop(getSensorList);
 //		
 //	}
-//	public void forceStop() {
-//		Command forceStopCommand = client.getCommand("stop");
-//		client.request(forceStopCommand);
-//		
-//		Command removeRatioDriveComand = client.getCommand("ratioDrive");
-//		client.request(removeRatioDriveComand);
-//	}
+	public void forceStop() {
+		Command forceStopCommand = client.getCommand("stop");
+		client.request(forceStopCommand);
+		
+		Command removeRatioDriveComand = client.getCommand("ratioDrive");
+		client.request(removeRatioDriveComand);
+	}
 	
 	
 	

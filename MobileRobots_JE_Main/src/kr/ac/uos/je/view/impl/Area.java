@@ -5,7 +5,7 @@ import java.nio.FloatBuffer;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
-import kr.ac.uos.je.utils.OpenGLUtils;
+import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;

@@ -7,7 +7,7 @@ import kr.ac.uos.je.controller.RobotCommuniator;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.utils.OpenGLUtils;
+import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.impl.Area;
 import kr.ac.uos.je.view.impl.Goals;
 import kr.ac.uos.je.view.impl.Line;
@@ -42,7 +42,7 @@ public class MainScreen implements Screen {
 //		initRobotObject();
 	}
 	private void initMapObject() {
-		//Be careful spriteBatch, texure drawing has some bug.
+		//Be careful spriteBatch, texture drawing has some bug.
 		this.objectList = new ArrayList<DrawObject>();
 		
 		objectList.add(new Path(mMapManager, EObjectType.PATH));

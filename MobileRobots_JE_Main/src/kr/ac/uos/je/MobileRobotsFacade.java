@@ -6,6 +6,7 @@ import kr.ac.uos.je.model.interfaces.ResourceManager;
 import kr.ac.uos.je.screens.IntroScreen;
 import kr.ac.uos.je.screens.MainScreen;
 import kr.ac.uos.je.screens.Screen;
+import kr.ac.uos.je.tools.InvertedTriangleMesh;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -71,6 +72,7 @@ public class MobileRobotsFacade implements ApplicationListener {
 	@Override
 	public void dispose() {
 		screen.dispose();
+		InvertedTriangleMesh.getMesh().dispose();
 	}
 
 }

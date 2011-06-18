@@ -4,8 +4,8 @@ import java.nio.FloatBuffer;
 
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.model.interfaces.ResourceManager;
-import kr.ac.uos.je.utils.OpenGLUtils;
+import kr.ac.uos.je.tools.InvertedTriangleMesh;
+import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
@@ -52,6 +52,7 @@ public class Point implements DrawObject {
 			gl.glDrawArrays(GL10.GL_POINTS, 0, pointVertices.length / 3);
 			//Disable the client state before leaving
 			gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
+			
 			gl.glPopMatrix();
 		}
 	}
@@ -66,9 +67,12 @@ public class Point implements DrawObject {
 		return this.objectType;
 	}
 
+//	private SpriteBatch spriteBatch;
 	@Override
 	public void update(Application app, SpriteBatch spriteBatch) {
-		// TODO Auto-generated method stub
+//		if(this.spriteBatch == null){
+//			this.spriteBatch = spriteBatch;
+//		}
 		
 	}
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
-import kr.ac.uos.je.model.EObjectType.AdditionalMapObject;
-import kr.ac.uos.je.utils.EMapFactory;
+import kr.ac.uos.je.model.EObjectType.SubObject;
+import kr.ac.uos.je.tools.EMapFactory;
 import kr.ac.uos.semix2.robot.DataPacket;
 
 public enum EMapManager {
@@ -27,17 +27,18 @@ public enum EMapManager {
 	}
 
 	public void setMapStatus(MapStatus mapStatus) {
+		this.mMapStatus = mapStatus;
 		if(mapStatus == MapStatus.LoadingComplete){
 			createMap();
 		}
-		this.mMapStatus = mapStatus;
 	}
 
 	private int mapWidth;
 	private int mapHeight;
 	private float MAX_ZOOM_RATE = -1;
 	private void createMap() {
-		mMapStatus = MapStatus.LoadingComplete;
+		EObjectType.GOALS.sortSubObjectByname();
+		
 		EObjectType.MAP_LINE.setVertices(EMapFactory.integerListToFloatArray(mapLineList));
 		EObjectType.MAP_POINT.setVertices(EMapFactory.integerListToFloatArray(mapPointList));
 		EObjectType.FORBIDDEN_LINE.setVertices(EMapFactory.integerListToFloatArray(forbiddenLineList));
@@ -118,7 +119,7 @@ public enum EMapManager {
 	}
 	public void addGoal(int x, int y, String description, String iconName,
 			String name, boolean withHeading) {
-		EObjectType.GOALS.addAdditionalMapObject(new AdditionalMapObject(x, y, description, iconName, name, withHeading));
+		EObjectType.GOALS.addSubObject(new SubObject(x, y, description, iconName, name, withHeading));
 		
 	}
 	
@@ -179,5 +180,18 @@ public enum EMapManager {
 		this.screenHeight = height;
 		this.isScreenDataInitilized = true;
 	}
-	
+	public String[] getGoalList(){
+		EObjectType.GOALS.getObjectName();
+//		for ( iterable_element : iterable) {
+//			
+//		}
+		return null;
+	}
+	/**
+	 * TODO Size calculate
+	 */
+	public static final float ROBOT_SIZE = 1000;
+	public float getObjectSize() {
+		return ROBOT_SIZE;
+	}
 }

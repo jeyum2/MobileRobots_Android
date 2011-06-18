@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MobileRobots</string>
-    <string name="ConnectionFail">Connection Fail..Check and Try Again!</string>
-    <string name="Progress_Title_Login">Login</string>
-    <string name="Progress_Message_Login">Please Wait..</string>
+    <string name="app_name">MobileRobotsAndroidVer</string>
+    
+	<string name="ConnectionFail">Connection Fail..Check and Try Again!</string>
+	<string name="Progress_Title_Login">Login</string>
+	<string name="Progress_Message_Login">Please Wait..</string>
+
+    <string name="GetGoalList">Get Goal List</string>
+    <string name="DisplaySetting">Display Setting</string>
+    <string name="CenterOnRobot">Center On Robot</string>
+    <string name="ManualDrive">Manual Drive</string>
+    <string name="ForceStop">Force Stop</string>
+    <string name="Preference">Preference</string>
 </resources>

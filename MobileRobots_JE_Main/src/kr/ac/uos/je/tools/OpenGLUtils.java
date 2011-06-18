@@ -1,4 +1,4 @@
-package kr.ac.uos.je.utils;
+package kr.ac.uos.je.tools;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

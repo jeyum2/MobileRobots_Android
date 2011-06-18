@@ -4,7 +4,7 @@ import java.util.List;
 
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.model.EObjectType.AdditionalMapObject;
+import kr.ac.uos.je.model.EObjectType.SubObject;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
@@ -29,11 +29,11 @@ public class Goals implements DrawObject {
 
 
 	private float[] color;
-	private List<EObjectType.AdditionalMapObject> goalList;
+	private List<EObjectType.SubObject> goalList;
 	@Override
 	public void draw(Application app) {
 		if(goalList == null && mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete){
-			goalList = objectType.getAdditionalMapObject();
+			goalList = objectType.getSubObjects();
 				color = objectType.getColor();
 				font.setColor(color[0], color[1], color[2], color[3]);
 		}
@@ -45,7 +45,7 @@ public class Goals implements DrawObject {
 		if(goalList != null && objectType.isVisible()){
 			GL10 gl = app.getGraphics().getGL10();
 			gl.glLoadIdentity();
-			for(AdditionalMapObject goal : goalList){
+			for(SubObject goal : goalList){
 				gl.glPushMatrix();
 				font.setColor(Color.BLACK);
 				font.draw(spriteBatch, goal.getName(), goal.getX()+goalTexture.getWidth(), goal.getY()+goalTexture.getHeight()*2);
