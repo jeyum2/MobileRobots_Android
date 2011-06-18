@@ -62,8 +62,8 @@ public class RobotCommuniator implements Runnable{
 		getMapBinaryCommand();
 		getPathCommand();
 		updateCommand();
+		getSensor();
 //		getDrawingListCommand();
-//		getSensorList();
 //		getSensorCurrent();
 	}
 		
@@ -142,21 +142,58 @@ public class RobotCommuniator implements Runnable{
 		paramBuilder.appendString(goal);
 		client.request(gotoCommand, paramBuilder.toParameter());
 	}
-//	public void getSensorList() {
-//		Command getSensorList = client.getCommand("getSensorList");
-//		client.request(getSensorList);
-//		client.addDataPacketHandler(getSensorList, new DataPacketHandler() {
-//			public void handleDataPacket(DataPacket packet) {
-//				List<String> sensorList = new ArrayList<String>();
-//				DataPacketIterator iter = packet.getDataPacketIterator();
-//				int numSensors = iter.nextByte2();
-//				for (int i = 0; i < numSensors; i++) {
-//					 sensorList.add(iter.nextString());
-//				}
-////				ERobotStatus.ROBOT.setSensorList(sensorList);
-//			}
-//		});
-//	}
+	public void getSensor(){
+		getSensorList();
+		
+	}
+	private void getSensorList() {
+		Command getSensorList = client.getCommand("getSensorList");
+		client.request(getSensorList);
+		client.addDataPacketHandler(getSensorList, new DataPacketHandler() {
+			public void handleDataPacket(DataPacket packet) {
+				List<String> sensorList = new ArrayList<String>();
+				DataPacketIterator iter = packet.getDataPacketIterator();
+				int numSensors = iter.nextByte2();
+				for (int i = 0; i < numSensors; i++) {
+					 sensorList.add(iter.nextString());
+				}
+//				ERobotStatus.ROBOT.setSensorList(sensorList);
+			}
+		});
+	}
+	private void getSensorCurrent() {
+		Command getSensorCurrent = client.getCommand("getSensorCurrent");
+		client.addDataPacketHandler(getSensorCurrent, new DataPacketHandler() {
+
+			@Override
+			public void handleDataPacket(DataPacket packet) {
+				 DataPacketIterator iter = packet.getDataPacketIterator();
+				 int numOfReading = iter.nextByte2();
+//				 throw RobotControllerEception( "NumOfReading" + numOfReading);
+				 if(numOfReading > 0){
+					 String sensorName = iter.nextString();
+//					 throw RobotControllerEception( "Received " + sensorName + "Data");
+					 float[] coordinates = new float[numOfReading*3]; 
+					 for (int i = 0; i < numOfReading; i++) {
+						 coordinates[i*3] = iter.nextByte4();
+						 coordinates[i*3+1] = iter.nextByte4();
+						 coordinates[i*3+2] = 0.0f;
+					}
+					 String iconName = sensorName;
+					 String description = sensorName;
+//					 ERobotStatus.ROBOT.setSensorCoordinate(sensorName, new MapObject(sensorName, coordinates, iconName, description));
+				 }
+			}
+			});
+		String[] displayedSensorList = ERobotStatus.ROBOT.getDisplayedSensorList();
+		ParameterBuilder parameterBuilder = new ParameterBuilder();
+		for(String sensor : displayedSensorList){
+			parameterBuilder.appendString(sensor);
+		}
+		client.request(getSensorCurrent,parameterBuilder.toParameter() , 1000);
+	}
+	
+	
 //	private void getDrawingListCommand() {
 //		Command getDrawingListCommand = client.getCommand("getDrawingList");
 //		client.addDataPacketHandler(getDrawingListCommand, new DataPacketHandler() {
@@ -199,37 +236,7 @@ public class RobotCommuniator implements Runnable{
 //		removeSensorCurrent();
 //		getSensorCurrent();
 //	}
-//	private void getSensorCurrent() {
-//		Command getSensorCurrent = client.getCommand("getSensorCurrent");
-//		client.addDataPacketHandler(getSensorCurrent, new DataPacketHandler() {
-//
-//			@Override
-//			public void handleDataPacket(DataPacket packet) {
-//				 DataPacketIterator iter = packet.getDataPacketIterator();
-//				 int numOfReading = iter.nextByte2();
-////				 throw RobotControllerEception( "NumOfReading" + numOfReading);
-//				 if(numOfReading > 0){
-//					 String sensorName = iter.nextString();
-////					 throw RobotControllerEception( "Received " + sensorName + "Data");
-//					 float[] coordinates = new float[numOfReading*3]; 
-//					 for (int i = 0; i < numOfReading; i++) {
-//						 coordinates[i*3] = iter.nextByte4();
-//						 coordinates[i*3+1] = iter.nextByte4();
-//						 coordinates[i*3+2] = 0.0f;
-//					}
-//					 String iconName = sensorName;
-//					 String description = sensorName;
-////					 ERobotStatus.ROBOT.setSensorCoordinate(sensorName, new MapObject(sensorName, coordinates, iconName, description));
-//				 }
-//			}
-//			});
-//		String[] displayedSensorList = ERobotStatus.ROBOT.getDisplayedSensorList();
-//		ParameterBuilder parameterBuilder = new ParameterBuilder();
-//		for(String sensor : displayedSensorList){
-//			parameterBuilder.appendString(sensor);
-//		}
-//		client.request(getSensorCurrent,parameterBuilder.toParameter() , 1000);
-//	}
+//	
 //	
 //	private void removeSensorCurrent() {
 //		Command getSensorList = client.getCommand("getSensorList");

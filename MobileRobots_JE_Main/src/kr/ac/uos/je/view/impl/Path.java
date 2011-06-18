@@ -43,7 +43,7 @@ public class Path implements DrawObject {
 					GL10 gl = app.getGraphics().getGL10();
 					gl.glLoadIdentity();
 					gl.glPushMatrix();
-					
+					gl.glLineWidth(2.0f);
 					gl.glColor4f(color[0],color[1],color[2],color[3]);
 					//Point to our vertex buffer
 					gl.glVertexPointer(3, GL10.GL_FLOAT, 0, pointVertexBuffer);
@@ -60,10 +60,10 @@ public class Path implements DrawObject {
 						float endPointY = pointVertices[pointVertices.length-2];
 						System.out.println("Point = " + endPointX + "," + endPointY);
 						gl.glTranslatef(endPointX, endPointY, 0.0f);
-						gl.glScalef(100, 100, 0.0f);
+						gl.glScalef(10, 10, 0.0f);
 						InvertedTriangleMesh.getMesh().render();
 					}
-					
+					gl.glLineWidth(1.0f);
 					
 					gl.glPopMatrix();
 				}

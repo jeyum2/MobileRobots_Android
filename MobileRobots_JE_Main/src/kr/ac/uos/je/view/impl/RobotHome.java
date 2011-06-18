@@ -1,10 +1,12 @@
 package kr.ac.uos.je.view.impl;
 
+import java.nio.FloatBuffer;
 import java.util.List;
 
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.EObjectType.SubObject;
+import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
@@ -15,45 +17,39 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Goals implements DrawObject {
+public class RobotHome implements DrawObject {
 	private final EObjectType objectType;
 	private EMapManager mMapManager;
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private Texture goalTexture;
 
-	public Goals(EMapManager mMapManager, EObjectType objectType) {
+	public RobotHome(EMapManager mMapManager, EObjectType objectType) {
 		this.mMapManager = mMapManager;
 		this.objectType = objectType;
 	}
 
 
 	private float[] color;
-	private List<EObjectType.SubObject> goalList;
 	@Override
 	public void draw(Application app) {
-		if(goalList == null && mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete){
-			goalList = objectType.getSubObjects();
-				color = objectType.getColor();
-				font.setColor(color[0], color[1], color[2], color[3]);
-		}
-		if(objectType.isColorChanged()){
+		
+		if(color == null || objectType.isColorChanged()){
 			color = objectType.getColor();
-			font.setColor(color[0], color[1], color[2], color[3]);
-			
+//			font.setColor(color[0], color[1], color[2], color[3]);
 		}
-		if(goalList != null && objectType.isVisible()){
+		
+		if(mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete && objectType.isVisible()){
 			GL10 gl = app.getGraphics().getGL10();
 			gl.glLoadIdentity();
-			for(SubObject goal : goalList){
-				gl.glPushMatrix();
-				font.setColor(Color.BLACK);
-				font.draw(spriteBatch, goal.getName(), goal.getX()+goalTexture.getWidth(), goal.getY()+goalTexture.getHeight()*2);
-				spriteBatch.draw(goalTexture, 
-						  goal.getX(), goal.getY(), 
-						  0, 0,goalTexture.getWidth() , goalTexture.getHeight());		
-				gl.glPopMatrix();
-			}
+			
+			gl.glPushMatrix();
+			font.setColor(Color.BLACK);
+			font.draw(spriteBatch, objectType.name(), objectType.getVertices()[0]+goalTexture.getWidth(), objectType.getVertices()[1]+goalTexture.getHeight()*2);
+			spriteBatch.draw(goalTexture, 
+					objectType.getVertices()[0], objectType.getVertices()[1], 
+					  0, 0,goalTexture.getWidth() , goalTexture.getHeight());		
+			gl.glPopMatrix();
 		}
 		
 	}

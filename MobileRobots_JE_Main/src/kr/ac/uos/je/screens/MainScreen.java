@@ -9,10 +9,11 @@ import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.impl.Area;
-import kr.ac.uos.je.view.impl.Goals;
+import kr.ac.uos.je.view.impl.Goal;
 import kr.ac.uos.je.view.impl.Line;
 import kr.ac.uos.je.view.impl.Path;
 import kr.ac.uos.je.view.impl.Point;
+import kr.ac.uos.je.view.impl.RobotHome;
 import kr.ac.uos.je.view.impl.RobotPosition;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
@@ -21,9 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MainScreen implements Screen {
 	private EMapManager		mMapManager;
@@ -45,15 +44,17 @@ public class MainScreen implements Screen {
 		//Be careful spriteBatch, texture drawing has some bug.
 		this.objectList = new ArrayList<DrawObject>();
 		
-		objectList.add(new Path(mMapManager, EObjectType.PATH));
-		objectList.add(new RobotPosition(mMapManager, EObjectType.ROBOT_POSITION));
-		
-		
 		objectList.add(new Line(mMapManager, EObjectType.MAP_LINE));
 		objectList.add(new Point(mMapManager, EObjectType.MAP_POINT));
 		objectList.add(new Area(mMapManager, EObjectType.FORBIDDEN_AREA));
 		objectList.add(new Line(mMapManager, EObjectType.FORBIDDEN_LINE));
-		objectList.add(new Goals(mMapManager, EObjectType.GOALS));
+		
+		objectList.add(new RobotHome(mMapManager, EObjectType.ROBOT_HOME));
+		objectList.add(new Goal(mMapManager, EObjectType.GOALS));
+		
+		
+		objectList.add(new RobotPosition(mMapManager, EObjectType.ROBOT_POSITION));
+		objectList.add(new Path(mMapManager, EObjectType.PATH));
 		
 		
 		
