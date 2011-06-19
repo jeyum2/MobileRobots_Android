@@ -1,5 +1,7 @@
 package kr.ac.uos.je;
 
+import java.util.List;
+
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import android.content.Context;
@@ -65,6 +67,13 @@ public enum EResourceManagerImpl implements ResourceManager{
 		
 		int id = context.getResources().getIdentifier(name, "string", context.getPackageName());
 		return (id != 0)? context.getResources().getString(id) : "String not found";
+	}
+
+
+	private List<String> sensorList;
+	@Override
+	public void setSensorList(List<String> sensorList) {
+		this.sensorList = sensorList;
 	}
 
 	

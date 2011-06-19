@@ -2,12 +2,12 @@ package kr.ac.uos.je.view.impl;
 
 import java.nio.FloatBuffer;
 
+import kr.ac.uos.je.accessories.EMesh;
+import kr.ac.uos.je.accessories.OpenGLUtils;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
-import kr.ac.uos.je.tools.InvertedTriangleMesh;
-import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
@@ -61,7 +61,7 @@ public class Path implements DrawObject {
 						System.out.println("Point = " + endPointX + "," + endPointY);
 						gl.glTranslatef(endPointX, endPointY, 0.0f);
 						gl.glScalef(10, 10, 0.0f);
-						InvertedTriangleMesh.getMesh().render();
+						EMesh.InvertedTriangleMesh.render();
 					}
 					gl.glLineWidth(1.0f);
 					

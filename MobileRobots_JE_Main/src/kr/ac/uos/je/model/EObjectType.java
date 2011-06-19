@@ -1,8 +1,7 @@
 package kr.ac.uos.je.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public enum EObjectType{
 	ROBOT_HOME(new float[]{0.5f,0.5f,1.0f,1.0f}),
@@ -26,7 +25,7 @@ public enum EObjectType{
 		this.B_KEY = name()+"b";
 		this.ALPHA_KEY = name()+"a";
 		this.isColorChanged = false;
-		subObjectList = new ArrayList<SubObject>();
+		subObjectSet = new TreeSet<SubObject>();
 		this.defaultColor = defaultColor;
 	}
 
@@ -97,43 +96,43 @@ public enum EObjectType{
 	public void setObjectName(String objectName) {
 		this.objectName = objectName;
 	}
-	private List<SubObject> subObjectList;
+	private TreeSet<SubObject> subObjectSet;
 	public void addSubObject(SubObject additionalMapObject){
-		subObjectList.add(additionalMapObject);
+		subObjectSet.add(additionalMapObject);
 	}
-	public List<SubObject> getSubObjects(){
-		return subObjectList;
+	public Set<SubObject> getSubObjects(){
+		return subObjectSet;
 	}
 	public String[] getSubObjectNames(){
-		String[] nameList = new String[subObjectList.size()];
-		for (int i = 0; i < nameList.length; i++) {
-			nameList[i] = subObjectList.get(i).getName();
+		String[] nameList = new String[subObjectSet.size()];
+		int i = 0;
+		for (SubObject subObject : subObjectSet) {
+			nameList[i] = subObject.getName();
+			i++;
 		}
 		return nameList;
 	}
-	public void sortSubObjectByname(){
-		Collections.sort(subObjectList);
-	}
 	public static class SubObject implements Comparable<SubObject>{
-		private final int x;
-		private final int y;
 		private final String description;
 		private final String iconName;
 		private final String name;
 		private final boolean additionalFunc;
-		public SubObject(int x, int y, String description, String iconName, String name, boolean additionalFunc) {
-			this.x = x;
-			this.y = y;
+		private final float[] vertices;
+		public SubObject(float[] vertices, String description, String iconName, String name, boolean additionalFunc) {
+			this.vertices = vertices;
 			this.description = description;
 			this.iconName = iconName;
 			this.name = name;
 			this.additionalFunc = additionalFunc;
 		}
-		public int getX() {
-			return x;
+		public float getX() {
+			return vertices[0];
 		}
-		public int getY() {
-			return y;
+		public float getY() {
+			return vertices[1];
+		}
+		public float[] getVertices(){
+			return vertices;
 		}
 		public String getDescription() {
 			return description;
@@ -151,6 +150,19 @@ public enum EObjectType{
 		public int compareTo(SubObject s) {
 			return name.compareTo(s.name);
 		}
+		@Override
+		public boolean equals(Object obj) {
+			if(obj instanceof SubObject){
+				SubObject s = (SubObject) obj; 
+				return name.equals(s.getName());
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return name.hashCode();
+		}
+		
 		
 	}
 	

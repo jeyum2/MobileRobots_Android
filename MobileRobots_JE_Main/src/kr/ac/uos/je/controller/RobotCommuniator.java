@@ -1,9 +1,13 @@
 package kr.ac.uos.je.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.exceptions.RobotControllerException;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
+import kr.ac.uos.je.model.EObjectType.SubObject;
 import kr.ac.uos.semix2.robot.Command;
 import kr.ac.uos.semix2.robot.DataPacket;
 import kr.ac.uos.semix2.robot.DataPacketHandler;
@@ -157,11 +161,12 @@ public class RobotCommuniator implements Runnable{
 				for (int i = 0; i < numSensors; i++) {
 					 sensorList.add(iter.nextString());
 				}
-//				ERobotStatus.ROBOT.setSensorList(sensorList);
+				androidAdaptor.getResourceManager().setSensorList(sensorList);
+				getSensorCurrent(sensorList);
 			}
 		});
 	}
-	private void getSensorCurrent() {
+	private void getSensorCurrent(List<String> sensorList) {
 		Command getSensorCurrent = client.getCommand("getSensorCurrent");
 		client.addDataPacketHandler(getSensorCurrent, new DataPacketHandler() {
 
@@ -181,13 +186,12 @@ public class RobotCommuniator implements Runnable{
 					}
 					 String iconName = sensorName;
 					 String description = sensorName;
-//					 ERobotStatus.ROBOT.setSensorCoordinate(sensorName, new MapObject(sensorName, coordinates, iconName, description));
+					 EObjectType.SENSORS.addSubObject(new SubObject(coordinates, description, iconName, sensorName, false));
 				 }
 			}
 			});
-		String[] displayedSensorList = ERobotStatus.ROBOT.getDisplayedSensorList();
 		ParameterBuilder parameterBuilder = new ParameterBuilder();
-		for(String sensor : displayedSensorList){
+		for(String sensor : sensorList){
 			parameterBuilder.appendString(sensor);
 		}
 		client.request(getSensorCurrent,parameterBuilder.toParameter() , 1000);

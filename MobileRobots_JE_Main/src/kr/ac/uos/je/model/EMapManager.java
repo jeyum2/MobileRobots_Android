@@ -3,9 +3,9 @@ package kr.ac.uos.je.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.uos.je.accessories.EMapFactory;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EObjectType.SubObject;
-import kr.ac.uos.je.tools.EMapFactory;
 import kr.ac.uos.semix2.robot.DataPacket;
 
 public enum EMapManager {
@@ -37,8 +37,6 @@ public enum EMapManager {
 	private int mapHeight;
 	private float MAX_ZOOM_RATE = -1;
 	private void createMap() {
-		EObjectType.GOALS.sortSubObjectByname();
-		
 		EObjectType.MAP_LINE.setVertices(EMapFactory.integerListToFloatArray(mapLineList));
 		EObjectType.MAP_POINT.setVertices(EMapFactory.integerListToFloatArray(mapPointList));
 		EObjectType.FORBIDDEN_LINE.setVertices(EMapFactory.integerListToFloatArray(forbiddenLineList));
@@ -119,7 +117,7 @@ public enum EMapManager {
 	}
 	public void addGoal(int x, int y, String description, String iconName,
 			String name, boolean withHeading) {
-		EObjectType.GOALS.addSubObject(new SubObject(x, y, description, iconName, name, withHeading));
+		EObjectType.GOALS.addSubObject(new SubObject(new float[]{x, y}, description, iconName, name, withHeading));
 		
 	}
 	

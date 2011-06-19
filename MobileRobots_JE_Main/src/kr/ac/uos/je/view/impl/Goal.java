@@ -1,6 +1,6 @@
 package kr.ac.uos.je.view.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
@@ -29,7 +29,7 @@ public class Goal implements DrawObject {
 
 
 	private float[] color;
-	private List<EObjectType.SubObject> goalList;
+	private Set<EObjectType.SubObject> goalList;
 	@Override
 	public void draw(Application app) {
 		if(goalList == null && mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete){

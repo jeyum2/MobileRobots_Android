@@ -1,16 +1,20 @@
-package kr.ac.uos.je.tools;
+package kr.ac.uos.je.accessories;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 
-public class InvertedTriangleMesh {
+public enum EMesh {
+
+	InvertedTriangleMesh(GL10.GL_TRIANGLES);
 	
-	private static InvertedTriangleMesh INSTANCE;
 	private Mesh mesh; 
-	
-	private InvertedTriangleMesh(){
+	private final int drawType;
+	private EMesh(int drawType){
+		this.drawType = drawType;
+		
 		mesh = new Mesh(true, 3, 3, 
 	            new VertexAttribute(Usage.Position, 3, "a_position")
 //	            ,new VertexAttribute(Usage.ColorPacked, 4, "a_color")
@@ -28,15 +32,19 @@ public class InvertedTriangleMesh {
 		
 	}
 	
-	public static InvertedTriangleMesh getMesh(){
-		if(INSTANCE == null) INSTANCE = new InvertedTriangleMesh();
-		return INSTANCE;
+	
+	public static void dispose(){
+		for (EMesh e : EMesh.values()) {
+			e.disposeMesh();
+		}
 	}
-	public void dispose(){
+	
+	public void disposeMesh(){
 		mesh.dispose();
+		
 	}
 	public void render(){
-		mesh.render(GL10.GL_TRIANGLES, 0, 3);
+		mesh.render(drawType, 0, 3);
 	}
 	
 }

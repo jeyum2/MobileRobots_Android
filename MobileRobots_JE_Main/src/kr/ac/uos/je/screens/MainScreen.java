@@ -3,11 +3,11 @@ package kr.ac.uos.je.screens;
 import java.util.ArrayList;
 import java.util.List;
 
+import kr.ac.uos.je.accessories.OpenGLUtils;
 import kr.ac.uos.je.controller.RobotCommuniator;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.tools.OpenGLUtils;
 import kr.ac.uos.je.view.impl.Area;
 import kr.ac.uos.je.view.impl.Goal;
 import kr.ac.uos.je.view.impl.Line;
