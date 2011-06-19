@@ -148,7 +148,6 @@ public class RobotCommuniator implements Runnable{
 	}
 	public void getSensor(){
 		getSensorList();
-		
 	}
 	private void getSensorList() {
 		Command getSensorList = client.getCommand("getSensorList");
@@ -177,16 +176,13 @@ public class RobotCommuniator implements Runnable{
 //				 throw RobotControllerEception( "NumOfReading" + numOfReading);
 				 if(numOfReading > 0){
 					 String sensorName = iter.nextString();
-//					 throw RobotControllerEception( "Received " + sensorName + "Data");
 					 float[] coordinates = new float[numOfReading*3]; 
 					 for (int i = 0; i < numOfReading; i++) {
 						 coordinates[i*3] = iter.nextByte4();
 						 coordinates[i*3+1] = iter.nextByte4();
 						 coordinates[i*3+2] = 0.0f;
 					}
-					 String iconName = sensorName;
-					 String description = sensorName;
-					 EObjectType.SENSORS.addSubObject(new SubObject(coordinates, description, iconName, sensorName, false));
+					 EObjectType.SENSORS.setSubObjectVertices(sensorName, coordinates);
 				 }
 			}
 			});

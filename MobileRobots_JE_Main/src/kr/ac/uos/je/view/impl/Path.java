@@ -30,7 +30,7 @@ public class Path implements DrawObject {
 	@Override
 	public void draw(Application app) {
 		if(mMapManager.getMapStatus() == EMapManager.MapStatus.LoadingComplete){
-			if(objectType.isColorChanged()){
+			if(color == null || objectType.isColorChanged()){
 				color = objectType.getColor();
 			}
 		
@@ -58,7 +58,6 @@ public class Path implements DrawObject {
 					if(pointVertices.length > 3){
 						float endPointX = pointVertices[pointVertices.length-3];
 						float endPointY = pointVertices[pointVertices.length-2];
-						System.out.println("Point = " + endPointX + "," + endPointY);
 						gl.glTranslatef(endPointX, endPointY, 0.0f);
 						gl.glScalef(10, 10, 0.0f);
 						EMesh.InvertedTriangleMesh.render();

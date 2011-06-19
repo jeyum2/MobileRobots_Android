@@ -75,6 +75,10 @@ public enum EResourceManagerImpl implements ResourceManager{
 	public void setSensorList(List<String> sensorList) {
 		this.sensorList = sensorList;
 	}
+	@Override
+	public List<String> getSensorList(){
+		return this.sensorList;
+	}
 
 	
 

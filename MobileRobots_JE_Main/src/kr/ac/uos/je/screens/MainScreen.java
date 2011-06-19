@@ -15,6 +15,7 @@ import kr.ac.uos.je.view.impl.Path;
 import kr.ac.uos.je.view.impl.Point;
 import kr.ac.uos.je.view.impl.RobotHome;
 import kr.ac.uos.je.view.impl.RobotPosition;
+import kr.ac.uos.je.view.impl.Sensor;
 import kr.ac.uos.je.view.interfaces.DrawObject;
 
 import com.badlogic.gdx.Application;
@@ -55,6 +56,7 @@ public class MainScreen implements Screen {
 		
 		objectList.add(new RobotPosition(mMapManager, EObjectType.ROBOT_POSITION));
 		objectList.add(new Path(mMapManager, EObjectType.PATH));
+		objectList.add(new Sensor(mMapManager, EObjectType.SENSORS));
 		
 		
 		

@@ -1,5 +1,6 @@
 package kr.ac.uos.je.model;
 
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -10,7 +11,7 @@ public enum EObjectType{
 	MAP_POINT(new float[]{0.0f,0.0f,0.0f,1.0f}),
 	FORBIDDEN_LINE(new float[]{1.0f,0.5f,0.0f,1.0f}),
 	ROBOT_POSITION(new float[]{0.0f,0.0f,0.0f,1.0f}),
-	SENSORS(new float[]{0.0f,0.5f,0.5f,1.0f}),
+	SENSORS(new float[]{0.8f,0.2f,0.4f,1.0f}),
 	GOALS(new float[]{1.0f,0.1f,0.1f,1.0f}),
 	PATH(new float[]{0.0f,0.0f,1.0f,1.0f});
 	
@@ -100,6 +101,18 @@ public enum EObjectType{
 	public void addSubObject(SubObject additionalMapObject){
 		subObjectSet.add(additionalMapObject);
 	}
+	public void setSubObjectVertices(String sensorName, float[] coordinates) {
+		Iterator<SubObject> i = subObjectSet.iterator();
+		while (i.hasNext()) {
+			SubObject subObject = (SubObject) i.next();
+			if(subObject.equals(sensorName)){
+				subObject.setVertices(coordinates);
+				return;
+			}
+		}
+		//No exist
+		subObjectSet.add(new SubObject(coordinates, sensorName, sensorName, sensorName, false));
+	}
 	public Set<SubObject> getSubObjects(){
 		return subObjectSet;
 	}
@@ -117,7 +130,7 @@ public enum EObjectType{
 		private final String iconName;
 		private final String name;
 		private final boolean additionalFunc;
-		private final float[] vertices;
+		private float[] vertices;
 		public SubObject(float[] vertices, String description, String iconName, String name, boolean additionalFunc) {
 			this.vertices = vertices;
 			this.description = description;
@@ -133,6 +146,9 @@ public enum EObjectType{
 		}
 		public float[] getVertices(){
 			return vertices;
+		}
+		public void setVertices(float[] vertices){
+			this.vertices = vertices;
 		}
 		public String getDescription() {
 			return description;
@@ -155,6 +171,9 @@ public enum EObjectType{
 			if(obj instanceof SubObject){
 				SubObject s = (SubObject) obj; 
 				return name.equals(s.getName());
+			}else if(obj instanceof String){
+				String s = (String) obj;
+				return name.equals(s);
 			}
 			return false;
 		}
@@ -165,5 +184,6 @@ public enum EObjectType{
 		
 		
 	}
+	
 	
 }

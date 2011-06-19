@@ -9,4 +9,6 @@ public interface ResourceManager {
 
 	public void setSensorList(List<String> sensorList);
 
+	List<String> getSensorList();
+
 }
