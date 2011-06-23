@@ -7,11 +7,11 @@ import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
 import kr.ac.uos.je.exceptions.RobotControllerException;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
-import kr.ac.uos.je.model.EObjectType.SubObject;
 import kr.ac.uos.semix2.robot.Command;
 import kr.ac.uos.semix2.robot.DataPacket;
 import kr.ac.uos.semix2.robot.DataPacketHandler;
 import kr.ac.uos.semix2.robot.DataPacketIterator;
+import kr.ac.uos.semix2.robot.Parameter;
 import kr.ac.uos.semix2.robot.ParameterBuilder;
 import kr.ac.uos.semix2.robot.RobotClient;
 import kr.ac.uos.semix2.robot.RobotClientFactory;
@@ -253,22 +253,21 @@ public class RobotCommuniator implements Runnable{
 	
 	
 	
-//	public void ratioDrive(ManualDriveDirection direction) {
-//		throw RobotControllerEception("Drive", "Request Drive : " + direction.name());
-//		
-//		Command ratioDriveCommand = client.getCommand("ratioDrive");
+	public void ratioDrive(double transRatio, double rotRatio, double throttleRatio) {
+		
+		Command ratioDriveCommand = client.getCommand("ratioDrive");
 //		if(direction != ERobotStatus.ManualDriveDirection.Stop){
-//			ParameterBuilder parameterBuilder = new ParameterBuilder();
-//			parameterBuilder.appendDouble(direction.getTransRatio()); 		// translationValue
-//			parameterBuilder.appendDouble(direction.getRotRatio());		// rotationValue
-//			parameterBuilder.appendDouble(ERobotStatus.ManualDriveDirection.getThrottleRatio());	// scalingFactor
-//			Parameter parameter = parameterBuilder.toParameter();
-//			client.stop(ratioDriveCommand);
-//			client.request(ratioDriveCommand, parameter, 100);
+			ParameterBuilder parameterBuilder = new ParameterBuilder();
+			parameterBuilder.appendDouble(transRatio);
+			parameterBuilder.appendDouble(rotRatio);
+			parameterBuilder.appendDouble(throttleRatio);
+			Parameter parameter = parameterBuilder.toParameter();
+			client.stop(ratioDriveCommand);
+			client.request(ratioDriveCommand, parameter);
 //		}else{
 //			client.stop(ratioDriveCommand);
 //			forceStop();
 //		}
-//	}
+	}
 		
 }

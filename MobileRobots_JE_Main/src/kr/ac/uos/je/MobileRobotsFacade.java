@@ -2,6 +2,7 @@ package kr.ac.uos.je;
 
 import kr.ac.uos.je.accessories.EMesh;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
+import kr.ac.uos.je.controller.interfaces.IFacedeController;
 import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import kr.ac.uos.je.screens.IntroScreen;
@@ -12,7 +13,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 
-public class MobileRobotsFacade implements ApplicationListener {
+public class MobileRobotsFacade implements ApplicationListener, IFacedeController {
 
 	private Screen screen;
 	public enum EScreenStatus{IntroScreen, MainScreen}
@@ -74,5 +75,6 @@ public class MobileRobotsFacade implements ApplicationListener {
 		screen.dispose();
 		EMesh.dispose();
 	}
+	
 
 }

@@ -41,7 +41,6 @@ public class Sensor implements DrawObject {
 				gl.glPushMatrix();{
 					for(SubObject sensor : sensorSet){
 						float[] pointVertices = sensor.getVertices();
-						System.out.println(sensor.getName());
 						if(pointVertices != null && pointVertices.length > 2){
 							gl.glPushMatrix();
 							FloatBuffer pointVertexBuffer = OpenGLUtils.arrayToFloatBuffer(pointVertices);

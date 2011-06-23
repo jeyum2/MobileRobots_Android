@@ -1,19 +1,20 @@
 package kr.ac.uos.je;
 
+import kr.ac.uos.je.controller.ERobotMode;
 import kr.ac.uos.je.controller.RobotCommuniator;
 import kr.ac.uos.je.controller.interfaces.AndroidAdaptor;
+import kr.ac.uos.je.controller.interfaces.IFacedeController;
 import kr.ac.uos.je.exceptions.RobotControllerException;
-import kr.ac.uos.je.model.EMapManager;
 import kr.ac.uos.je.model.EObjectType;
 import kr.ac.uos.je.model.interfaces.ResourceManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,15 +27,16 @@ import android.widget.Toast;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 
 public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  implements AndroidAdaptor, View.OnKeyListener, DialogInterface.OnKeyListener{
-	private MobileRobotsFacade mMobileRobotsFacade;
+	private IFacedeController mMobileRobotsFacade;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
     	EResourceManagerImpl.ResourceManger.initPreferences(getApplicationContext());
-		mMobileRobotsFacade = new MobileRobotsFacade(EResourceManagerImpl.ResourceManger, this);
+    	MobileRobotsFacade mMobileRobotsFacade = new MobileRobotsFacade(EResourceManagerImpl.ResourceManger, this);
 		initialize(mMobileRobotsFacade,false);
+		this.mMobileRobotsFacade = mMobileRobotsFacade;
     }	
 	
 	
@@ -55,6 +57,12 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		mMobileRobotsFacade.dispose();
+		try {
+			RobotCommuniator.getRobotClient().disconnect();
+		} catch (RobotControllerException e) {
+			e.printStackTrace();
+		}
 		EResourceManagerImpl.ResourceManger.saveResourceToPreference();
 	}
 	
@@ -236,7 +244,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 				showGoalListMenu();
 				return true;
 			case R.id.Menu_CenterOnRobot:
-//				Toast.makeText(getApplicationContext(), EDisplayMode.MODE.setCenterOnRobotMode(), Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),  ERobotMode.CenterOnRobotMode.toggleMode(), Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.Menu_ForceStop:
 			try {
@@ -247,7 +255,7 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
 				Toast.makeText(getApplicationContext(), "Force Stop", Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.Menu_ManualDrive:
-//				showChoiceManualDrive();
+				Toast.makeText(getApplicationContext(), ERobotMode.ManualDriveMode.toggleMode(), Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.Menu_Preference:
 //				showPreferenceList();
@@ -275,8 +283,6 @@ public class MobileRobotsAndroidVerMainActivity extends AndroidApplication  impl
         .create().show();
 	}
 
-
-	
 	
 }
 
